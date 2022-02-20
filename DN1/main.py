@@ -18,13 +18,13 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
     :param A: Azimuth
     :param h: Elevation
     """
-    alpha = hms_2_deg(alpha)  # Warning! Alpha is given in HMS
-    delta = dms_2_dec(delta)
-    H = get_LST(time, SUT0, lamb) - alpha
-    h = np.arcsin(np.sin(phi)*np.sin(delta)+np.cos(phi)*np.cos(delta)*np.cos(H))
-    A = np.arcsin(- (np.sin(H)*np.cos(delta))/np.cos(h))
+    H = np.deg2rad((get_LST(time, SUT0, lamb) - hms_2_deg(alpha)) % 360)  # Warning! Alpha is given in HMS
+    delta = np.deg2rad(dms_2_dec(delta))
+    phi = np.deg2rad(phi)
+    h = np.arcsin(np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*np.cos(H))
+    A = np.arccos((np.sin(delta)-np.sin(phi)*np.sin(h))/(np.cos(phi)*np.cos(h)))
 
-    return A, h
+    return np.rad2deg(A), np.rad2deg(h)
 
 
 def GMST(jd):
@@ -78,3 +78,4 @@ RA_rigel = "05 15 35.9"
 DEC_rigel = "-08 20 44.8"
 
 print(eq_to_hor(RA_rigel, DEC_rigel, obstime, ZeroTime, AGO_lambda, AGO_phi))
+print(eq_to_hor(RA_sirius, DEC_sirius, obstime, ZeroTime, AGO_lambda, AGO_phi))
