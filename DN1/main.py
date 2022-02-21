@@ -15,8 +15,8 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
     :param phi: Observer latitude
 
     OUTPUTS:
-    :param A: Azimuth
-    :param h: Elevation
+    :return A: Azimuth
+    :return h: Elevation
     """
     H = np.deg2rad((get_LST(time, SUT0, lamb) - hms_2_deg(alpha)) % 360)  # Warning! Alpha is given in HMS
     delta = np.deg2rad(dms_2_dec(delta))
@@ -65,17 +65,47 @@ def get_LST(t, SUT0, lambd, t_0=15):
     return (SUT0 + lambd + (t - t_0) * (366.2422 / 365.2422)) % 360
 
 
+def track_altaz(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
+    """
+    Track elevation and azimuth of desired star at discrete time points
+    :param alpha: Right ascension of star
+    :param delta: Declination of star
+    :param time_start: Time of observation start in HMS
+    :param time_end: Time of observation end in HMS
+    :param bins: Discrete divisions of time interval
+    :param SUT0: Greenwich sidereal time at 0h UT
+    :param lamb: Observer longitude
+    :param phi: Observer latitude
+    :return: 2D array with Azimuth and elevation
+    """
+    time_start = hms_2_deg(time_start)
+    time_end = hms_2_deg(time_end)
+    times = np.linspace(time_start, time_end, bins)
+    output = []
+    for time in times:
+        output.append(eq_to_hor(alpha, delta, time, SUT0, lamb, phi))
+
+    return np.array(output)
+
+
 # ----Observatory Data----
 obstime = "18:50:05"
 AGO_lambda = 14.5277
 AGO_phi = 46.0439
 ZeroTime = 149.912405
 
-
+# ----Test with Cartes du Ciel----
 RA_sirius = "06 46 07.6"
 DEC_sirius = "-16 45 57.5"
 RA_rigel = "05 15 35.9"
 DEC_rigel = "-08 20 44.8"
 
-print(eq_to_hor(RA_rigel, DEC_rigel, obstime, ZeroTime, AGO_lambda, AGO_phi))
-print(eq_to_hor(RA_sirius, DEC_sirius, obstime, ZeroTime, AGO_lambda, AGO_phi))
+# print(eq_to_hor(RA_rigel, DEC_rigel, obstime, ZeroTime, AGO_lambda, AGO_phi))
+# print(eq_to_hor(RA_sirius, DEC_sirius, obstime, ZeroTime, AGO_lambda, AGO_phi))
+
+# ----Tracking two stars----
+RA_procyon = ""
+DEC_procyon = ""
+RA_betaUMi = ""
+DEC_betaUMi = ""
+
