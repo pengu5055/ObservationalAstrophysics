@@ -80,7 +80,7 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     :param SUT0: Greenwich sidereal time at 0h UT
     :param lamb: Observer longitude
     :param phi: Observer latitude
-    :return: 2D array with Azimuth and elevation
+    :return: 2D array with Azimuth and elevation and 1D array of times
     """
     time_start = hms_2_deg(time_start)
     time_end = hms_2_deg(time_end)
@@ -89,7 +89,7 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     for time in times:
         output.append(eq_to_hor(alpha, delta, time, SUT0, lamb, phi))
 
-    return np.array(output)
+    return np.column_stack(np.array(output)), times
 
 
 # ----Observatory Data----
@@ -116,6 +116,20 @@ DEC_betaUMi = ""
 t_start = "18:00:00"
 t_end = "05:00:00"  # The next day but SUT0 by definition should stay the same
 
-data = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 200, ZeroTime, AGO_lambda, AGO_phi)
-print(data)
+azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 200, ZeroTime, AGO_lambda, AGO_phi)
+az = azalt[0]
+alt = azalt[1]
 
+
+fig, (ax1, ax2) = plt.subplots(2, 1)
+ax1.plot(times, az)
+ax1.set_xlabel(r"Time $[\degree]$")
+ax1.set_ylabel(r"Azimuth $[\degree]$")
+
+ax2.plot(times, alt)
+ax2.set_xlabel(r"Time $[\degree]$")
+ax2.set_ylabel(r"Elevation $[\degree]$")
+
+plt.suptitle("Azimuth and Elevation of Procyon")
+plt.subplots_adjust(hspace=0.34)
+plt.show()
