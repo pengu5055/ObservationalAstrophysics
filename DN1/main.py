@@ -18,9 +18,9 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
     :return A: Azimuth
     :return h: Elevation
     """
-    time = hms_2_deg(time)
-    H = np.deg2rad((get_LST(time, SUT0, lamb) - hms_2_deg(alpha)) % 360)  # Warning! Alpha is given in HMS
-    delta = np.deg2rad(dms_2_dec(delta))
+    time = hms2deg(time)
+    H = np.deg2rad((get_LST(time, SUT0, lamb) - hms2deg(alpha)) % 360)  # Warning! Alpha is given in HMS
+    delta = np.deg2rad(dms2deg(delta))
     phi = np.deg2rad(phi)
     h = np.arcsin(np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*np.cos(H))
     A = np.arccos((np.sin(delta)-np.sin(phi)*np.sin(h))/(np.cos(phi)*np.cos(h)))
@@ -37,7 +37,7 @@ def GMST(jd):
     return 24110.54841 + 8640184.812866*T + 0.093104 * T**2 - 0.0000062 * T**3
 
 
-def dms_2_dec(t):
+def dms2deg(t):
     """Convert DMS to decimals. Input format DD MM SS.SS"""
     t = t.split(" ")
     if np.sign(int(t[0])) == 1 or np.sign(int(t[0])) == 0:
@@ -48,7 +48,15 @@ def dms_2_dec(t):
         raise ValueError("Something's fucky..")
 
 
-def hms_2_deg(time):
+def deg2dms(time):
+    tH = int(np.trunc(time))
+    tM = int(np.trunc((time - tH) * 60))
+    tS = (((time - tH) * 60) - tM) * 60
+
+    return "{:0>2d}:{:0>2d}:{:05.2f}".format(int(tH), int(tM), (tS))
+
+
+def hms2deg(time):
     """Converts HMS time to degree. Input format HH:MM:SS.SS or HH MM SS.SS"""
     time = str(time)
     if time[2] == ":":
@@ -90,8 +98,8 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     :param phi: Observer latitude
     :return: 2D array with Azimuth and elevation and 1D array of times
     """
-    time_start = hms_2_deg(time_start)
-    time_end = hms_2_deg(time_end)
+    time_start = hms2deg(time_start)
+    time_end = hms2deg(time_end)
     times = np.linspace(time_start, time_end, bins)
     output = []
     for time in times:
@@ -116,8 +124,8 @@ DEC_rigel = "-08 20 44.8"
 # print(eq_to_hor(RA_sirius, DEC_sirius, obstime, ZeroTime, AGO_lambda, AGO_phi))
 
 # ----Tracking two stars----
-RA_procyon = "07 39 18.11950"
-DEC_procyon = "05 13 29.9552"
+RA_procyon = "07 40 27.871"
+DEC_procyon = "05 10 00.74 "
 RA_betaUMi = ""
 DEC_betaUMi = ""
 
@@ -137,4 +145,7 @@ ax.set_rlabel_position(-22.5)
 ax.grid(True)
 
 plt.title("Azimuth and elevation of Procyon")
-plt.show()
+# plt.show()
+print(deg2dms(46.0439))
+print(deg2dms(14.5277))
+print((deg2dms(az[0]), deg2dms(alt[0])), deg2hms(times[0]))
