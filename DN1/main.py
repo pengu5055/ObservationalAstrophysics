@@ -18,6 +18,7 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
     :return A: Azimuth
     :return h: Elevation
     """
+    time = hms_2_deg(time)
     H = np.deg2rad((get_LST(time, SUT0, lamb) - hms_2_deg(alpha)) % 360)  # Warning! Alpha is given in HMS
     delta = np.deg2rad(dms_2_dec(delta))
     phi = np.deg2rad(phi)
@@ -49,23 +50,26 @@ def dms_2_dec(t):
 
 def hms_2_deg(time):
     """Converts HMS time to degree. Input format HH:MM:SS.SS or HH MM SS.SS"""
+    time = str(time)
     if time[2] == ":":
         s = time.split(":")
     elif time[2] == " ":
         s = time.split(" ")
     else:
-        raise ValueError("Unknown input format")
+        # raise ValueError("Unknown input format")
+        return float(time)
 
     return ((float(s[0]) + (float(s[1]) / 60) + float(s[2]) / 3600) * 15) % 360
 
 
 def get_LST(t, SUT0, lambd, t_0=15):
     """Get local star time"""
-    t = hms_2_deg(t)
+    #if not t.isnumeric():
+    #   t = hms_2_deg(t)
     return (SUT0 + lambd + (t - t_0) * (366.2422 / 365.2422)) % 360
 
 
-def track_altaz(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
+def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     """
     Track elevation and azimuth of desired star at discrete time points
     :param alpha: Right ascension of star
@@ -104,8 +108,14 @@ DEC_rigel = "-08 20 44.8"
 # print(eq_to_hor(RA_sirius, DEC_sirius, obstime, ZeroTime, AGO_lambda, AGO_phi))
 
 # ----Tracking two stars----
-RA_procyon = ""
-DEC_procyon = ""
+RA_procyon = "07 39 18.11950"
+DEC_procyon = "05 13 29.9552"
 RA_betaUMi = ""
 DEC_betaUMi = ""
+
+t_start = "18:00:00"
+t_end = "05:00:00"  # The next day but SUT0 by definition should stay the same
+
+data = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 200, ZeroTime, AGO_lambda, AGO_phi)
+print(data)
 
