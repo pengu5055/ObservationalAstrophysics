@@ -62,10 +62,18 @@ def hms_2_deg(time):
     return ((float(s[0]) + (float(s[1]) / 60) + float(s[2]) / 3600) * 15) % 360
 
 
+def deg2hms(time):
+    """Converts degree time to HMS"""
+    time = time/15
+    tH = int(np.trunc(time))
+    tM = int(np.trunc((time - tH)*60))
+    tS = (((time - tH)*60)-tM)*60
+
+    return "{:0>2d}:{:0>2d}:{:05.2f}".format(int(tH), int(tM), (tS))
+
+
 def get_LST(t, SUT0, lambd, t_0=15):
     """Get local star time"""
-    #if not t.isnumeric():
-    #   t = hms_2_deg(t)
     return (SUT0 + lambd + (t - t_0) * (366.2422 / 365.2422)) % 360
 
 
@@ -116,20 +124,17 @@ DEC_betaUMi = ""
 t_start = "18:00:00"
 t_end = "05:00:00"  # The next day but SUT0 by definition should stay the same
 
+
 azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 200, ZeroTime, AGO_lambda, AGO_phi)
 az = azalt[0]
 alt = azalt[1]
+fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
+ax.set_rlim(bottom=90, top=0)
+ax.plot(az, alt)
+ax.set_rmax(90)
+ax.set_rticks([0, 15, 30, 45, 60, 75, 90])
+ax.set_rlabel_position(-22.5)
+ax.grid(True)
 
-
-fig, (ax1, ax2) = plt.subplots(2, 1)
-ax1.plot(times, az)
-ax1.set_xlabel(r"Time $[\degree]$")
-ax1.set_ylabel(r"Azimuth $[\degree]$")
-
-ax2.plot(times, alt)
-ax2.set_xlabel(r"Time $[\degree]$")
-ax2.set_ylabel(r"Elevation $[\degree]$")
-
-plt.suptitle("Azimuth and Elevation of Procyon")
-plt.subplots_adjust(hspace=0.34)
+plt.title("Azimuth and elevation of Procyon")
 plt.show()
