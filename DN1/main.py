@@ -108,6 +108,22 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     return np.column_stack(np.array(output)), times
 
 
+def crange(start, end, modulo, bin):
+    """Generator of circular range"""
+    step = np.abs(start - end)/bin
+    end += bin   # Hacky fix to extend range to [start, end] and not [start, end)
+    if start > end:
+        while start < modulo:
+            yield start
+            start += step
+        start = 0
+
+    while start < end:
+        yield start
+        start += step
+
+
+
 # ----Observatory Data----
 obstime = "18:50:05"
 AGO_lambda = 14.5277
@@ -146,6 +162,5 @@ ax.grid(True)
 
 plt.title("Azimuth and elevation of Procyon")
 # plt.show()
-print(deg2dms(46.0439))
-print(deg2dms(14.5277))
-print((deg2dms(az[0]), deg2dms(alt[0])), deg2hms(times[0]))
+datapoint = 10
+print((deg2dms(az[datapoint]), deg2dms(alt[datapoint])), deg2hms(times[datapoint]))
