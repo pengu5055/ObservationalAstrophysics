@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cmasher as cmr
+from matplotlib.collections import LineCollection
 
 
 def eq_to_hor(alpha, delta, time, SUT0, lamb, phi, deg=0):
@@ -92,7 +93,7 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     :param delta: Declination of star
     :param time_start: Time of observation start in HMS
     :param time_end: Time of observation end in HMS
-    :param bins: Discrete divisions of time interval
+    :param bins: Discrete divisions of time interval (2 less than given because broken bins system in generator)
     :param SUT0: Greenwich sidereal time at 0h UT
     :param lamb: Observer longitude
     :param phi: Observer latitude
@@ -149,18 +150,40 @@ t_start = "18:00:00"
 t_end = "05:00:00"  # The next day but SUT0 by definition should stay the same
 
 
-azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 200, ZeroTime, AGO_lambda, AGO_phi)
+# azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 20, ZeroTime, AGO_lambda, AGO_phi)
+# az = azalt[0]
+# alt = azalt[1]
+# fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
+# ax.set_rlim(bottom=90, top=0)
+# ax.scatter(az, alt, c=times, cmap="cmr.cosmic", vmin=times[-1], vmax=times[0])
+# ax.set_rmax(90)
+# ax.set_rticks([0, 15, 30, 45, 60, 75, 90])
+# ax.set_rlabel_position(-22.5)
+# ax.grid(True)
+# plt.colorbar(mappable=)
+#
+# plt.title("Azimuth and elevation of Procyon")
+# plt.show()
+
+azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 20, ZeroTime, AGO_lambda, AGO_phi)
 az = azalt[0]
 alt = azalt[1]
+datapoints = np.array([np.deg2rad(az), alt]).T.reshape(-1, 1, 2)
+segments = np.concatenate([datapoints[:-1], datapoints[1:]], axis=1)
+norm = plt.Normalize(0, 360)
+lc = LineCollection(segments, cmap="cmr.infinity_s", norm=norm)
+lc.set_array(times)
+
+# WARNING: POLAR PLOT TAKES X DATA IN RADIANS
 fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
+line = ax.add_collection(lc)
 ax.set_rlim(bottom=90, top=0)
-ax.plot(az, alt)
+# ax.scatter(np.deg2rad(az), alt, c=times, cmap="cmr.infinity", vmin=times[-1], vmax=times[0])
 ax.set_rmax(90)
 ax.set_rticks([0, 15, 30, 45, 60, 75, 90])
-ax.set_rlabel_position(-22.5)
+# ax.set_rlabel_position(-22.5)
+ax.set_theta_zero_location("N")
 ax.grid(True)
-
+plt.colorbar(line, label=r"Time $[\degree]$")
 plt.title("Azimuth and elevation of Procyon")
-# plt.show()
-datapoint = 10
-print((deg2dms(az[datapoint]), deg2dms(alt[datapoint])), deg2hms(times[datapoint]))
+plt.show()
