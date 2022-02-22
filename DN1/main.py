@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cmasher as cmr
 
 
-def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
+def eq_to_hor(alpha, delta, time, SUT0, lamb, phi, deg=0):
     """
     Convert equatorial coordinates to horizontal
     INPUTS:
@@ -100,18 +100,19 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     """
     time_start = hms2deg(time_start)
     time_end = hms2deg(time_end)
-    times = np.linspace(time_start, time_end, bins)
+    times = list(crange(time_start, time_end, 360, bins))
     output = []
     for time in times:
+        time = deg2hms(time)  # Hacky fix the fact that eq_to_hor takes HMS time (and instantly converts it into deg)
         output.append(eq_to_hor(alpha, delta, time, SUT0, lamb, phi))
 
-    return np.column_stack(np.array(output)), times
+    return np.column_stack(np.array(output)), np.array(list(times))
 
 
 def crange(start, end, modulo, bin):
     """Generator of circular range"""
     step = np.abs(start - end)/bin
-    end += bin   # Hacky fix to extend range to [start, end] and not [start, end)
+    # end += bin   # Hacky fix to extend range to [start, end] and not [start, end)
     if start > end:
         while start < modulo:
             yield start
@@ -121,7 +122,6 @@ def crange(start, end, modulo, bin):
     while start < end:
         yield start
         start += step
-
 
 
 # ----Observatory Data----
