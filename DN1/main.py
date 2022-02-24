@@ -20,7 +20,7 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
     :return h: Elevation
     """
     time = hms2deg(time)
-    H = np.deg2rad((get_LST(time, SUT0, lamb) - hms2deg(alpha)) % 360)  # Warning! Alpha is given in HMS
+    H = np.deg2rad((get_LST(time, SUT0, lamb) - hms2deg(alpha))% 360)  # Warning! Alpha is given in HMS
     print(H)
     delta = np.deg2rad(dms2deg(delta))
     phi = np.deg2rad(phi)
@@ -60,7 +60,7 @@ def hms2deg(time):
         # raise ValueError("Unknown input format")
         return float(time)
 
-    return ((float(s[0]) + (float(s[1]) / 60) + float(s[2]) / 3600) * 15) #% 360
+    return ((float(s[0]) + (float(s[1]) / 60) + float(s[2]) / 3600) * 15) % 360
 
 
 def deg2hms(time):
@@ -94,7 +94,6 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     time_start = hms2deg(time_start)
     time_end = hms2deg(time_end)
     times = list(crange(time_start, time_end, 360, bins))
-    print(times)
     output = []
     for time in times:
         time = deg2hms(time)  # Hacky fix the fact that eq_to_hor takes HMS time (and instantly converts it into deg)
@@ -103,7 +102,7 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     return np.column_stack(np.array(output)), np.array(list(times))
 
 
-def crange(start, end, modulo, bin):
+def crange2(start, end, modulo, bin):
     """Generator of circular range"""
     step = np.abs(start - end)/bin
     # end += bin   # Hacky fix to extend range to [start, end] and not [start, end)
@@ -116,6 +115,15 @@ def crange(start, end, modulo, bin):
     while start < end:
         yield start
         start += step
+
+
+def crange3(start, end, modulo, bin):
+    """Generator of circular range"""
+    return np.linspace(start, end + modulo, bin) % modulo
+
+
+def crange(start, end, modulo, bin):
+    return np.linspace(start, end + modulo, bin)
 
 
 # ----Observatory Data----
@@ -141,11 +149,11 @@ DEC_procyon = "05 10 00.74 "
 RA_betaUMi = "14 50 42.32580"
 DEC_betaUMi = "74 09 19.8142"
 
-t_start = "21:00:00"
-t_end = "00:00:00"  # The next day but SUT0 by definition should stay the same
+t_start = "18:00:00"
+t_end = "06:00:00"  # The next day but SUT0 by definition should stay the same
 
 
-azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 100, ZeroTime, AGO_lambda, AGO_phi)
+azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 1000, ZeroTime, AGO_lambda, AGO_phi)
 az = azalt[0]
 alt = azalt[1]
 print(times)
@@ -175,19 +183,19 @@ lc.set_array(times)
 # Plot style 2
 fig, ax = plt.subplots()
 # line = ax.add_collection(lc)
-for i in range(len(az)):
-    plt.scatter(az[i], alt[i], label=i)
+# for i in range(len(az)):
+#     plt.scatter(az[i], alt[i], label=i)
 
-plt.xlim(0, 360)
-plt.ylim(-90, 90)
+plt.plot(times)
+#plt.xlim(0, 360)
+#plt.ylim(-90, 90)
 # plt.colorbar(line, label=r"Time $[\degree]$")
-plt.title("Azimuth and elevation of Procyon")
+plt.title("Debug plot")
 plt.xlabel(r"Azimuth $[\degree]$")
 plt.ylabel(r"Elevation $[\degree]$")
 plt.legend()
 
-time = "21:55:00"
+time = "00:50:00"
 r1, r2 = eq_to_hor(RA_procyon, DEC_procyon, time, ZeroTime, AGO_lambda, AGO_phi)
-print(deg2dms(r1), deg2dms(r2))
-
-# plt.show()
+print(deg2dms(r1), deg2dms(r2), hms2deg(time))
+plt.show()
