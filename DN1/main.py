@@ -20,8 +20,8 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
     :return h: Elevation
     """
     time = hms2deg(time)
-    H = np.deg2rad((get_LST(time, SUT0, lamb) - hms2deg(alpha))% 360)  # Warning! Alpha is given in HMS
-    print(H)
+    H = np.deg2rad((get_LST(time, SUT0, lamb) - hms2deg(alpha)) % 360)  # Warning! Alpha is given in HMS
+    print(np.rad2deg(H))
     delta = np.deg2rad(dms2deg(delta))
     phi = np.deg2rad(phi)
     h = np.arcsin(np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*np.cos(H))
@@ -78,6 +78,14 @@ def get_LST(t, SUT0, lambd, t_0=15):
     return (SUT0 + lambd + (t - t_0) * (366.2422 / 365.2422)) % 360
 
 
+def GMST(jd):
+    """Calculate GMST 0h UT from julian date"""
+    T_u = (jd - 2451545.0)/36525
+    unit = 0.00416  # Seconds of time, to degrees in decimal
+    res = 24110.54841 + 8640184.812866 * T_u + 0.093104 * T_u**2 - 6.2E-06 * T_u**3
+    return res*unit
+
+
 def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     """
     Track elevation and azimuth of desired star at discrete time points
@@ -91,8 +99,8 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     :param phi: Observer latitude
     :return: 2D array with Azimuth and elevation and 1D array of times
     """
-    time_start = hms2deg(time_start)
-    time_end = hms2deg(time_end)
+    time_start = hms2deg(time_start) + 180
+    time_end = hms2deg(time_end) + 180
     times = list(crange(time_start, time_end, 360, bins))
     output = []
     for time in times:
@@ -132,6 +140,7 @@ AGO_lambda = 14.5277
 AGO_phi = 46.0439
 # ZeroTime = 149.912405
 ZeroTime = 148.926757
+jd_obs = 2459629.50000
 
 # ----Test with Cartes du Ciel----
 RA_sirius = "06 46 07.6"
@@ -153,7 +162,7 @@ t_start = "18:00:00"
 t_end = "06:00:00"  # The next day but SUT0 by definition should stay the same
 
 
-azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 1000, ZeroTime, AGO_lambda, AGO_phi)
+azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 10, ZeroTime, AGO_lambda, AGO_phi)
 az = azalt[0]
 alt = azalt[1]
 print(times)
@@ -195,7 +204,7 @@ plt.xlabel(r"Azimuth $[\degree]$")
 plt.ylabel(r"Elevation $[\degree]$")
 plt.legend()
 
-time = "00:50:00"
+time = "22:43:00"
 r1, r2 = eq_to_hor(RA_procyon, DEC_procyon, time, ZeroTime, AGO_lambda, AGO_phi)
 print(deg2dms(r1), deg2dms(r2), hms2deg(time))
-plt.show()
+# plt.show()
