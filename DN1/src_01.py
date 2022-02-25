@@ -29,7 +29,7 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
 
 def eq2azalt(alpha, delta, time, SUT0, lamb, phi):
     """
-    Convert equatorial coordinates to horizontal
+    Convert equatorial coordinates to alt az
     INPUTS:
     :param alpha: Right ascension in deg
     :param delta: Declination in deg
@@ -128,6 +128,28 @@ def track_azalt(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
     for time in times:
         time = deg2hms(time)  # Hacky fix the fact that eq_to_hor takes HMS time (and instantly converts it into deg)
         output.append(eq_to_hor(alpha, delta, time, SUT0, lamb, phi))
+
+    return np.column_stack(np.array(output)), np.array(list(times))
+
+
+def startrack(alpha, delta, time_start, time_end, bins, SUT0, lamb, phi):
+    """
+    Track elevation and azimuth of desired star at discrete time points
+    :param alpha: Right ascension of star in deg
+    :param delta: Declination of star in deg
+    :param time_start: Time of observation start in deg
+    :param time_end: Time of observation end in deg
+    :param bins: Discrete divisions of time interval
+    :param SUT0: Greenwich sidereal time at 0h UT in deg
+    :param lamb: Observer longitude in deg
+    :param phi: Observer latitude in deg
+    :return: 2D array with Azimuth and elevation and 1D array of times
+    """
+    times = list(crange(time_start, time_end, 360, bins))
+    print(times)
+    output = []
+    for time in times:
+        output.append(eq2azalt(alpha, delta, time, SUT0, lamb, phi))
 
     return np.column_stack(np.array(output)), np.array(list(times))
 

@@ -18,12 +18,12 @@ RA_rigel = 78.63446707
 DEC_rigel = -08.20163836
 
 r1, r2 = eq2azalt(RA_rigel, DEC_rigel, obstime_deg, ZeroTime, AGO_lambda, AGO_phi)
-print(deg2dms(r1), deg2dms(r2))
+print(r1, r2)
 # print(eq_to_hor(RA_sirius, DEC_sirius, obstime, ZeroTime, AGO_lambda, AGO_phi))
 
 # ----Tracking two stars----
-RA_procyon = "07 40 27.871"
-DEC_procyon = "05 10 00.74 "
+RA_procyon = 114.82549791
+DEC_procyon = 05.22498756
 RA_betaUMi = "14 50 42.32580"
 DEC_betaUMi = "74 09 19.8142"
 
@@ -31,6 +31,14 @@ t_start = "18:00:00"
 t_end = "06:00:00"  # The next day but SUT0 by definition should stay the same
 
 time = "23:44:00"
-r1, r2 = eq_to_hor(RA_procyon, DEC_procyon, time, ZeroTime, AGO_lambda, AGO_phi)
-print(deg2dms(r1), deg2dms(r2), hms2deg(time))
+r1, r2 = eq2azalt(RA_procyon, DEC_procyon, obstime_deg, ZeroTime, AGO_lambda, AGO_phi)
+print("Procyon Az:{} Alt:{} Time:{}".format(r1, r2, obstime_deg))
+
+(az, alt), times = startrack(RA_procyon, DEC_procyon, 270, 90, 10, ZeroTime, AGO_lambda, AGO_phi)
+
+for i in range(len(az)):
+    plt.plot(az[i], alt[i], label=i)
+
+plt.legend()
+plt.title("Debug plot")
 plt.show()
