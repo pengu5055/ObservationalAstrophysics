@@ -10,7 +10,7 @@ RA_procyon = 114.82549791
 DEC_procyon = 05.22498756
 
 
-times = np.linspace(270, 90 + 360, 20)
+times = np.arange(270, 90 + 360, 20)
 for time in times:
     az1, alt1 = eq2azalt(RA_procyon, DEC_procyon, time, ZeroTime, AGO_lambda, AGO_phi)
     print("Procyon Az: {} Alt: {} Time: {}".format(deg2dms(az1), deg2dms(alt1), time))
