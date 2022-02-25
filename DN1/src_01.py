@@ -1,7 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import cmasher as cmr
-from matplotlib.collections import LineCollection
 
 
 def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
@@ -26,6 +23,31 @@ def eq_to_hor(alpha, delta, time, SUT0, lamb, phi):
     h = np.arcsin(np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*np.cos(H))
     # A = np.arccos((np.sin(delta)-np.sin(phi)*np.sin(h))/(np.cos(phi)*np.cos(h)))
     A = (np.arcsin(-np.sin(H)*np.sin(delta)/np.cos(h)))
+
+    return np.rad2deg(A), np.rad2deg(h)
+
+
+def eq2azalt(alpha, delta, time, SUT0, lamb, phi):
+    """
+    Convert equatorial coordinates to horizontal
+    INPUTS:
+    :param alpha: Right ascension in deg
+    :param delta: Declination in deg
+    :param SUT0: Greenwich mean sidereal time at 0h UT in deg
+    :param time: Time of observation in HH:MM:SS
+    :param lamb: Observer longitude in deg
+    :param phi: Observer latitude in deg
+
+    OUTPUTS:
+    :return A: Azimuth
+    :return h: Elevation
+    """
+    H = np.deg2rad((get_LST(time, SUT0, lamb) - alpha) % 360)
+    delta = np.deg2rad(delta)
+    phi = np.deg2rad(phi)
+    h = np.arcsin(np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*np.cos(H))
+    A = np.arccos((np.sin(delta)-np.sin(phi)*np.sin(h))/(np.cos(phi)*np.cos(h)))
+    # A = (np.arcsin(-np.sin(H)*np.sin(delta)/np.cos(h)))
 
     return np.rad2deg(A), np.rad2deg(h)
 
@@ -132,77 +154,3 @@ def crange3(start, end, modulo, bin):
 
 def crange(start, end, modulo, bin):
     return np.linspace(start, end + modulo, bin)
-
-
-# ----Observatory Data----
-obstime = "18:50:05"
-AGO_lambda = 14.5277
-AGO_phi = 46.0439
-ZeroTime = 148.926757
-jd_obs = 2459629.50000
-
-# ----Test with Cartes du Ciel----
-RA_sirius = "06 46 07.6"
-DEC_sirius = "-16 45 57.5"
-RA_rigel = "05 15 35.9"
-DEC_rigel = "-08 10 44.8"
-
-r1, r2 = eq_to_hor(RA_rigel, DEC_rigel, "18:30:00", ZeroTime, AGO_lambda, AGO_phi)
-print(deg2dms(r1), deg2dms(r2))
-# print(eq_to_hor(RA_sirius, DEC_sirius, obstime, ZeroTime, AGO_lambda, AGO_phi))
-
-# ----Tracking two stars----
-RA_procyon = "07 40 27.871"
-DEC_procyon = "05 10 00.74 "
-RA_betaUMi = "14 50 42.32580"
-DEC_betaUMi = "74 09 19.8142"
-
-t_start = "18:00:00"
-t_end = "06:00:00"  # The next day but SUT0 by definition should stay the same
-
-
-azalt, times, = track_azalt(RA_procyon, DEC_procyon, t_start, t_end, 10, ZeroTime, AGO_lambda, AGO_phi)
-az = azalt[0]
-alt = azalt[1]
-# Plot style 1
-# datapoints = np.array([np.deg2rad(az), alt]).T.reshape(-1, 1, 2)
-datapoints = np.array([(az), alt]).T.reshape(-1, 1, 2)
-
-segments = np.concatenate([datapoints[:-1], datapoints[1:]], axis=1)
-norm = plt.Normalize(0, 360)
-lc = LineCollection(segments, cmap="cmr.infinity_s", norm=norm)
-lc.set_array(times)
-
-# WARNING: POLAR PLOT TAKES X DATA IN RADIANS
-# fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
-# line = ax.add_collection(lc)
-# ax.set_rlim(bottom=90, top=0)
-# ax.set_rmax(90)
-# ax.set_rticks([0, 15, 30, 45, 60, 75, 90])
-# # ax.set_rlabel_position(-22.5)
-# ax.set_theta_zero_location("N")
-# ax.set_theta_direction(-1)
-# ax.grid(True)
-# plt.colorbar(line, label=r"Time $[\degree]$", pad=0.075)
-# plt.title(r"Azimuth and elevation of $\beta$ UMi")
-# plt.show()
-
-# Plot style 2
-fig, ax = plt.subplots()
-# line = ax.add_collection(lc)
-for i in range(len(az)):
-    plt.scatter(az[i], alt[i], label=i)
-# print(times)
-# plt.plot(times)
-# plt.xlim(0, 360)
-# plt.ylim(-90, 90)
-# plt.colorbar(line, label=r"Time $[\degree]$")
-plt.title("Debug plot")
-plt.xlabel(r"Azimuth $[\degree]$")
-plt.ylabel(r"Elevation $[\degree]$")
-plt.legend()
-
-time = "23:44:00"
-r1, r2 = eq_to_hor(RA_procyon, DEC_procyon, time, ZeroTime, AGO_lambda, AGO_phi)
-print(deg2dms(r1), deg2dms(r2), hms2deg(time))
-plt.show()
