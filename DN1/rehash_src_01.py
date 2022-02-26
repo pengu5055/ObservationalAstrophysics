@@ -59,7 +59,8 @@ def startrack(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
 
     output = []
     for time in times:
-        output.append(eq2azalt(alpha, delta, time, SUT0, lamb, phi))
+        az, alt = eq2azalt(alpha, delta, time, SUT0, lamb, phi)
+        output.append()
 
     return np.column_stack(np.array(output)), times
 
@@ -83,6 +84,7 @@ def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
     output = []
 
     for day in range(len(GMST)):
-        output.append((eq2azalt(alpha, delta, TOD, GMST[day], Obs_lambda, Obs_phi), DSE[day]))
+        az, alt = eq2azalt(alpha[day], delta[day], TOD, GMST[day], Obs_lambda, Obs_phi)
+        output.append([az, alt, DSE[day]])
 
-    return np.array(output)
+    return np.column_stack(np.array(output))

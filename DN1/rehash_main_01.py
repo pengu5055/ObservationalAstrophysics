@@ -41,7 +41,6 @@ plt.title("Azimuth and elevation of Procyon")
 plt.show()
 
 # ==== Plot style 2 ====
-# WARNING: POLAR PLOT TAKES X DATA IN RADIANS
 datapoints = np.array([data[0], data[1]]).T.reshape(-1, 1, 2)
 segments = np.concatenate([datapoints[:-1], datapoints[1:]], axis=1)
 norm = plt.Normalize(0, 360)
