@@ -12,7 +12,8 @@ ZeroTime = 148.926757
 # ---- Track 2 stars ----
 RA_procyon = 114.82549791
 DEC_procyon = 05.22498756
-
+RA_kochab = 222.67635750
+DEC_kochab = 74.15550394
 
 data, times = startrack(RA_procyon, DEC_procyon, 270, 90, 20000, ZeroTime, AGO_lambda, AGO_phi)
 for i in range(len(times)):
@@ -52,7 +53,9 @@ line = ax.add_collection(lc)
 plt.xlim(0, 360)
 plt.ylim(-90, 90)
 plt.colorbar(line, label=r"Time $[\degree]$")
+# plt.title(r"Azimuth and elevation of $\beta$ UMi")
 plt.title("Azimuth and elevation of Procyon")
 plt.xlabel(r"Azimuth $[\degree]$")
 plt.ylabel(r"Elevation $[\degree]$")
+ax.grid(True)
 plt.show()
