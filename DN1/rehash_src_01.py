@@ -62,3 +62,27 @@ def startrack(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
         output.append(eq2azalt(alpha, delta, time, SUT0, lamb, phi))
 
     return np.column_stack(np.array(output)), times
+
+
+def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
+    """
+
+
+    :param GMST:
+    :param TOD:
+    :param Obs_lambda:
+    :param Obs_phi:
+    :param index_delay:
+    :return:
+    """
+    DSE = np.arange(0, len(GMST)) + index_delay  # Days since spring equinox
+    epsilon = 23.44
+    lamb = 2*np.pi*DSE/365.2422
+    alpha = np.arctan(np.tan(lamb)*np.cos(epsilon))
+    delta = np.arcsin(np.sin(lamb)*np.sin(epsilon))
+    output = []
+
+    for day in range(len(GMST)):
+        output.append((eq2azalt(alpha, delta, TOD, GMST[day], Obs_lambda, Obs_phi), DSE[day]))
+
+    return np.array(output)
