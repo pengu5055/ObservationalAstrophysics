@@ -35,7 +35,7 @@ def deg2dms(time):
     return "{:0>2d}:{:0>2d}:{:05.2f}".format(int(tH), int(tM), (tS))
 
 
-def trackstar(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
+def startrack(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
     """
     Track elevation and azimuth of desired star at discrete time points
     :param alpha: Right ascension of star
@@ -49,10 +49,16 @@ def trackstar(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
 
     :return: 2D array with Azimuth and elevation and 1D array of times
     """
-    step = np.abs(t_start - t_end)/bins
-    times = np.arange(t_start, t_end + 360, step)
+    step = np.abs(t_start + t_end)/bins
+    if t_start > t_end:
+        times = np.arange(t_start, t_end + 360, step)
+    elif t_start < t_end:
+        times = np.arange(t_start, t_end, step)
+    else:
+        raise ValueError("Something's fucky..")
+
     output = []
     for time in times:
         output.append(eq2azalt(alpha, delta, time, SUT0, lamb, phi))
 
-    return np.column_stack(np.array(output))
+    return np.column_stack(np.array(output)), times
