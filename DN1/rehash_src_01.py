@@ -66,14 +66,14 @@ def startrack(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
 
 def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
     """
+    Get Az, Alt of sun at certain time in the day for a whole year
 
-
-    :param GMST:
-    :param TOD:
-    :param Obs_lambda:
-    :param Obs_phi:
-    :param index_delay:
-    :return:
+    :param GMST: Array of SUT0 numbers for days in degrees
+    :param TOD: Time of day in degrees
+    :param Obs_lambda: Observer longitude in degrees
+    :param Obs_phi: Observer latitude in degrees
+    :param index_delay: Delay of GMST vector for days since vernal equinox
+    :return: Array with azimuth, altitude and day since vernal equinox
     """
     DSE = np.arange(0, len(GMST)) + index_delay  # Days since spring equinox
     epsilon = np.deg2rad(23.44)
@@ -82,18 +82,16 @@ def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
     delta = np.arcsin(np.sin(lamb)*np.sin(epsilon))
     output = []
 
-    # Continuity corrections?
+    # Continuity corrections
     alpha[(171 - 79):] += np.pi
     alpha[(353 - 79):] += np.pi
 
     # Convert to deg for eq2azalt
-
     alpha = np.rad2deg(alpha)
     delta = np.rad2deg(delta)
 
     for day in range(len(GMST)):
         az, alt = eq2azalt(alpha[day], delta[day], TOD, GMST[day], Obs_lambda, Obs_phi)
-
         output.append([az, alt, DSE[day]])
 
     return np.column_stack(np.array(output))
