@@ -155,13 +155,15 @@ def get_C(M, C_1, C_2, C_3, C_4, C_5, C_6):
             C_4*np.sin(4*M) + C_5*np.sin(5*M) + C_6*np.sin(6*M))
 
 
-def planetary_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, M_0, M_1, Pi, C, cont_cor1, cont_cor2, index_delay=0):
+def planetary_analemma(GMST, TOD, year_length, Obs_lambda, Obs_phi, JD_start,
+                       M_0, M_1, Pi, C, cont_cor1, cont_cor2, index_delay=0):
     """
         Calculates analemma for planet. Generalization of sun_proper_analemma().
         Get Az, Alt of sun at certain time in the day for a whole year
 
-        :param GMST: Array of SUT0 numbers for days in degrees
+        :param GMST: Array of SUT0 numbers for days in degrees. Must be size year_length + 1
         :param TOD: Time of day in degrees
+        :param year_length: Length of planet year in earth days
         :param Obs_lambda: Observer longitude in degrees
         :param Obs_phi: Observer latitude in degrees
         :param JD_start: Julian date of first day in GMST
@@ -180,7 +182,7 @@ def planetary_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, M_0, M_1, Pi, C
     C_1, C_2, C_3, C_4, C_5, C_6 = C
 
     DSE = np.arange(0, len(GMST)) + index_delay  # Days since spring equinox
-    J = np.arange(JD_start, JD_start + 366)
+    J = np.arange(JD_start, JD_start + year_length + 1)
     M = (M_0 + M_1 * (J - J_2000)) % 360
     C = get_C(M, C_1, C_2, C_3, C_4, C_5, C_6)
 
@@ -198,7 +200,7 @@ def planetary_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, M_0, M_1, Pi, C
     alpha = np.rad2deg(alpha)
     delta = np.rad2deg(delta)
 
-    for day in range(len(GMST)):
+    for day in range(year_length):
         az, alt = eq2azalt(alpha[day], delta[day], TOD, GMST[day], Obs_lambda, Obs_phi)
         output.append([az, alt, DSE[day]])
 
