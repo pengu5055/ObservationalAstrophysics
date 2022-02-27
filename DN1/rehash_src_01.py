@@ -20,7 +20,6 @@ def eq2azalt(alpha, delta, t, SUT0, lamb, phi, t_0=15):
     h = np.arcsin(np.sin(phi) * np.sin(delta) + np.cos(phi) * np.cos(delta) * np.cos(H))
     A = np.arccos((np.sin(delta) - np.sin(h) * np.sin(phi)) / (np.cos(h) * np.cos(phi)))
 
-    # Unknown correction
     if np.rad2deg(H) < 180:
         return 360 - np.rad2deg(A), np.rad2deg(h)
 
@@ -77,14 +76,25 @@ def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
     :return:
     """
     DSE = np.arange(0, len(GMST)) + index_delay  # Days since spring equinox
-    epsilon = 23.44
-    lamb = 2*np.pi*DSE/365.2422
+    epsilon = np.deg2rad(23.44)
+    lamb = 2*np.pi*DSE/365.2422  # Already in radians
     alpha = np.arctan(np.tan(lamb)*np.cos(epsilon))
     delta = np.arcsin(np.sin(lamb)*np.sin(epsilon))
     output = []
 
+    # Continuity corrections?
+    alpha[(171 - 79):] += np.pi
+    alpha[(353 - 79):] += np.pi
+
+    # Convert to deg for eq2azalt
+
+    alpha = np.rad2deg(alpha)
+    delta = np.rad2deg(delta)
+
     for day in range(len(GMST)):
         az, alt = eq2azalt(alpha[day], delta[day], TOD, GMST[day], Obs_lambda, Obs_phi)
+
         output.append([az, alt, DSE[day]])
 
     return np.column_stack(np.array(output))
+
