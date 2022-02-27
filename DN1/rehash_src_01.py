@@ -96,3 +96,59 @@ def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
 
     return np.column_stack(np.array(output))
 
+
+def sun_proper_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, index_delay=0):
+    """
+    Analemma but taking into account, that Earth's orbit is not circular but elliptical
+    :param GMST:
+    :param TOD:
+    :param Obs_lambda:
+    :param Obs_phi:
+    :param JD_start:
+    :param index_delay:
+    :return:
+    """
+    # Podane konstante
+    epsilon = np.deg2rad(23.44)
+    Pi = 102.9373
+    M_0 = 357.5291
+    M_1 = 0.98560028
+    J_2000 = 2451545
+    C_1 = 1.9148
+    C_2 = 0.0200
+    C_3 = 0.0003
+    C_4 = 0
+    C_5 = 0
+    C_6 = 0
+
+    DSE = np.arange(0, len(GMST)) + index_delay  # Days since spring equinox
+    J = np.arange(JD_start, JD_start + 365)
+    M = (M_0 + M_1*(J- J_2000)) % 360
+    C = get_C(M, C_1, C_2, C_3, C_4, C_5, C_6)
+
+    lamb = np.deg2rad(M + Pi + C + 180)  # Lambda in degrees
+
+    alpha = np.arctan(np.tan(lamb) * np.cos(epsilon))
+    delta = np.arcsin(np.sin(lamb) * np.sin(epsilon))
+    output = []
+
+    # Continuity corrections
+    alpha[(171 - 79):] += np.pi
+    alpha[(353 - 79):] += np.pi
+
+    # Convert to deg for eq2azalt
+    alpha = np.rad2deg(alpha)
+    delta = np.rad2deg(delta)
+
+    for day in range(len(GMST)):
+        az, alt = eq2azalt(alpha[day], delta[day], TOD, GMST[day], Obs_lambda, Obs_phi)
+        output.append([az, alt, DSE[day]])
+
+    return np.column_stack(np.array(output))
+
+
+def get_C(M, C_1, C_2, C_3, C_4, C_5, C_6):
+    M = np.deg2rad(M)
+    return np.rad2deg(C_1*np.sin(M) + C_2*np.sin(2*M) + C_3*np.sin(3*M) +
+                      C_4*np.sin(4*M) + C_5*np.sin(5*M) + C_6*np.sin(6*M))
+
