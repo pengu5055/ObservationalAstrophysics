@@ -100,13 +100,15 @@ def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
 def sun_proper_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, index_delay=0):
     """
     Analemma but taking into account, that Earth's orbit is not circular but elliptical
-    :param GMST:
-    :param TOD:
-    :param Obs_lambda:
-    :param Obs_phi:
-    :param JD_start:
-    :param index_delay:
-    :return:
+    Get Az, Alt of sun at certain time in the day for a whole year
+
+    :param GMST: Array of SUT0 numbers for days in degrees
+    :param TOD: Time of day in degrees
+    :param Obs_lambda: Observer longitude in degrees
+    :param Obs_phi: Observer latitude in degrees
+    :param JD_start: Julian date of first day in GMST
+    :param index_delay: Delay of GMST vector for days since vernal equinox
+    :return: Array with azimuth, altitude and day since vernal equinox
     """
     # Podane konstante
     epsilon = np.deg2rad(23.44)
@@ -122,19 +124,20 @@ def sun_proper_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, index_delay=0)
     C_6 = 0
 
     DSE = np.arange(0, len(GMST)) + index_delay  # Days since spring equinox
-    J = np.arange(JD_start, JD_start + 365)
-    M = (M_0 + M_1*(J- J_2000)) % 360
+    J = np.arange(JD_start, JD_start + 366)
+    M = (M_0 + M_1*(J - J_2000)) % 360
     C = get_C(M, C_1, C_2, C_3, C_4, C_5, C_6)
 
     lamb = np.deg2rad(M + Pi + C + 180)  # Lambda in degrees
-
+    print(lamb)
+    print(2*np.pi*DSE/365.2422)
     alpha = np.arctan(np.tan(lamb) * np.cos(epsilon))
     delta = np.arcsin(np.sin(lamb) * np.sin(epsilon))
     output = []
 
     # Continuity corrections
-    alpha[(171 - 79):] += np.pi
-    alpha[(353 - 79):] += np.pi
+    alpha[(171 - 77):] += np.pi
+    alpha[(353 - 76):] += np.pi
 
     # Convert to deg for eq2azalt
     alpha = np.rad2deg(alpha)
@@ -149,6 +152,6 @@ def sun_proper_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, index_delay=0)
 
 def get_C(M, C_1, C_2, C_3, C_4, C_5, C_6):
     M = np.deg2rad(M)
-    return np.rad2deg(C_1*np.sin(M) + C_2*np.sin(2*M) + C_3*np.sin(3*M) +
-                      C_4*np.sin(4*M) + C_5*np.sin(5*M) + C_6*np.sin(6*M))
+    return (C_1*np.sin(M) + C_2*np.sin(2*M) + C_3*np.sin(3*M) +
+            C_4*np.sin(4*M) + C_5*np.sin(5*M) + C_6*np.sin(6*M))
 
