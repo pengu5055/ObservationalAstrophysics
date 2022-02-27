@@ -59,7 +59,7 @@ def startrack(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
     output = []
     for time in times:
         az, alt = eq2azalt(alpha, delta, time, SUT0, lamb, phi)
-        output.append()
+        output.append([az, alt])
 
     return np.column_stack(np.array(output)), times
 
