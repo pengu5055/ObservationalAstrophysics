@@ -129,8 +129,7 @@ def sun_proper_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, index_delay=0)
     C = get_C(M, C_1, C_2, C_3, C_4, C_5, C_6)
 
     lamb = np.deg2rad(M + Pi + C + 180)  # Lambda in degrees
-    print(lamb)
-    print(2*np.pi*DSE/365.2422)
+
     alpha = np.arctan(np.tan(lamb) * np.cos(epsilon))
     delta = np.arcsin(np.sin(lamb) * np.sin(epsilon))
     output = []
