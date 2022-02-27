@@ -22,11 +22,11 @@ M_1 = 0.52402068
 Pi = 71.0041
 C = [10.6912, 0.6228, 0.0503, 0.0046, 0.0005, 0]
 
-mars_data = planetary_analemma(GMST, timeangle, 687, AGO_lambda, AGO_phi, JD_init, M_0, M_1, Pi, C, 170, 270)
+mars_data = planetary_analemma(GMST, timeangle, 687, AGO_lambda, AGO_phi, JD_init, M_0, M_1, Pi, C, 246, 577)
 
 datapoints = np.array([mars_data[0], mars_data[1]]).T.reshape(-1, 1, 2)
 segments = np.concatenate([datapoints[:-1], datapoints[1:]], axis=1)
-norm = plt.Normalize(0, 366)
+norm = plt.Normalize(0, 687)
 lc = LineCollection(segments, cmap="cmr.infinity_s", norm=norm)
 lc.set_array(mars_data[2])
 
@@ -36,7 +36,7 @@ line = ax.add_collection(lc)
 plt.xlim(0, 360)
 plt.ylim(-90, 90)
 plt.colorbar(line, label=r"Days since vernal equinox")
-plt.title("Analemma on Earth in 2022/23")
+plt.title("Analemma on Mars")
 plt.xlabel(r"Azimuth $[\degree]$")
 plt.ylabel(r"Elevation $[\degree]$")
 ax.grid(True)
