@@ -29,7 +29,7 @@ data_16 = sun_proper_analemma(GMST, 240, AGO_lambda, AGO_phi, JD_init)
 
 datapoints = np.array([data[0], data[1]]).T.reshape(-1, 1, 2)
 segments = np.concatenate([datapoints[:-1], datapoints[1:]], axis=1)
-norm = plt.Normalize(0, 360)
+norm = plt.Normalize(0, 366)
 lc = LineCollection(segments, cmap="cmr.infinity_s", norm=norm)
 lc.set_array(data[2])
 
