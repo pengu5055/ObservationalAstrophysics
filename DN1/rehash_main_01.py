@@ -9,6 +9,12 @@ AGO_lambda = 14.5277
 AGO_phi = 46.0439
 ZeroTime = 148.926757
 
+# ---- Test star ----
+RA_rigel = 78.63446707
+DEC_rigel = -08.20163836
+
+data2 = eq2azalt(RA_rigel, DEC_rigel, obstime_deg, ZeroTime, AGO_lambda, AGO_phi)
+print("Rigel Az: {} Alt: {}".format(deg2dms(data2[0]), deg2dms(data2[1])))
 # ---- Track 2 stars ----
 RA_procyon = 114.82549791
 DEC_procyon = 05.22498756
@@ -16,8 +22,8 @@ RA_kochab = 222.67635750
 DEC_kochab = 74.15550394
 
 data, times = startrack(RA_procyon, DEC_procyon, 270, 90, 20000, ZeroTime, AGO_lambda, AGO_phi)
-for i in range(len(times)):
-    print("Procyon Az: {} Alt: {} Time: {}".format(deg2dms(data[0, i]), deg2dms(data[1, i]), times[i]))
+# for i in range(len(times)):
+#     print("Procyon Az: {} Alt: {} Time: {}".format(deg2dms(data[0, i]), deg2dms(data[1, i]), times[i]))
 
 # ==== Plot style 1 ====
 # WARNING: POLAR PLOT TAKES X DATA IN RADIANS
