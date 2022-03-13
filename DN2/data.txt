@@ -3,7 +3,7 @@ d = 49.97 pm 1.1 kpc
 # Source: https://ui.adsabs.harvard.edu/abs/2013Natur.495...76P/abstract
 # Source: https://ui.adsabs.harvard.edu/abs/2022ApJ...927...89W/abstract
 # Source: https://ui.adsabs.harvard.edu/abs/2019Natur.567..200P/abstract
-r = 645 arcmin = 10.75 deg
+r = 645 arcmin = 10.75 deg = 14kpc
 # Source: http://astropixels.com/galaxies/LMC-01.html
 # Source: https://ui.adsabs.harvard.edu/abs/2008ApJ...682L..89G/abstract
 # Source: https://ui.adsabs.harvard.edu/abs/2004ApJ...614L.109G/abstract
@@ -11,7 +11,8 @@ r = 645 arcmin = 10.75 deg
 --- SMC Data ---
 d = 62 pm 0.3 kpc
 # Source: https://ui.adsabs.harvard.edu/abs/2016ApJ...816...49S/abstract
-r = 320 arcmin = 5.33 deg
+# Source: https://ui.adsabs.harvard.edu/abs/2017MNRAS.468.1349P/abstract
+r = 320 arcmin = 5.33 deg = 8 kpc
 # Source: http://astropixels.com/galaxies/SMC-01.html
 # Source: https://ui.adsabs.harvard.edu/abs/2011ApJ...733L..10N/abstract
 # Source: https://ui.adsabs.harvard.edu/abs/2007ApJ...665L..23N/abstract
