@@ -8,6 +8,9 @@ r = 645 arcmin = 10.75 deg = 14kpc
 # Source: https://ui.adsabs.harvard.edu/abs/2008ApJ...682L..89G/abstract
 # Source: https://ui.adsabs.harvard.edu/abs/2004ApJ...614L.109G/abstract
 # Source: https://ui.adsabs.harvard.edu/abs/2010AJ....140.1719S/abstract
+
+r = 322 arcmin = 5.37 deg SIMBAD
+# Source: https://ui.adsabs.harvard.edu/abs/2014MNRAS.445..881C/abstract
 --- SMC Data ---
 d = 62 pm 0.3 kpc
 # Source: https://ui.adsabs.harvard.edu/abs/2016ApJ...816...49S/abstract
@@ -17,6 +20,10 @@ r = 320 arcmin = 5.33 deg = 8 kpc
 # Source: https://ui.adsabs.harvard.edu/abs/2011ApJ...733L..10N/abstract
 # Source: https://ui.adsabs.harvard.edu/abs/2007ApJ...665L..23N/abstract
 
+r = 158 arcmin = 2.6 deg = 4.1 kpc
+http://simbad.cds.unistra.fr/simbad/sim-ref?bibcode=2014MNRAS.445..881C
 
 --- Promising papers ---
 https://ui.adsabs.harvard.edu/abs/2020MNRAS.495.2858R/abstract
+https://adsabs.harvard.edu/full/2000A%26A...363L...1K
+https://arxiv.org/abs/astro-ph/0011056

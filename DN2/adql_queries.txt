@@ -1,0 +1,13 @@
+SELECT TOP 10000000 source_id, ra, dec, parallax, pmra, pmdec, phot_g_mean_mag
+FROM gaiaedr3.gaia_source
+WHERE 1=CONTAINS(POINT('ICRS ', ra , dec ),CIRCLE('ICRS ', 80.8942 , -69.7561 , 5.37))
+AND phot_g_mean_mag < 15.5
+AND phot_g_mean_mag > 8.5
+AND parallax < 0.022222
+---------------------------------------
+SELECT TOP 10000000 source_id, ra, dec, parallax, pmra, pmdec, phot_g_mean_mag
+FROM gaiaedr3.gaia_source
+WHERE 1=CONTAINS(POINT('ICRS ', ra , dec ),CIRCLE('ICRS ', 013.1583 , -72.8003 , 2.6))
+AND phot_g_mean_mag < 15.5
+AND phot_g_mean_mag > 8.5
+AND parallax < 0.0172414
