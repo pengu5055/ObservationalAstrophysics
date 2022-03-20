@@ -11,6 +11,8 @@ deltaX = deltaY = np.array(100*[1])
 # deltaY = np.linspace(0, 1, 100)
 
 xx, yy = np.meshgrid(X, Y)
+U = xx * yy
 
-plt.streamplot(xx, yy, xx + 10, yy)
+
+plt.streamplot(xx, yy, U, yy)
 plt.show()
