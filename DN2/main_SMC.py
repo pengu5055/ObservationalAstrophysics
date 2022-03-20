@@ -7,6 +7,12 @@ c1, c2, c3 = cmr.take_cmap_colors("cmr.gothic", 3, cmap_range=(0.2, 0.8), return
 
 source_id, ra, dec, parallax, pmra, pmdec, phot_g_mean_mag = np.column_stack(np.genfromtxt("SMC_tc_rangemag5.csv", delimiter=",", skip_header=1))
 
+plt.scatter(pmra, pmdec, s=0.25, c=c2)
+plt.title("Proper motion of SMC stars")
+plt.xlabel(r"$\Delta\alpha$ [mas/year]")
+plt.ylabel(r"$\Delta\delta$ [mas/year]")
+plt.show()
+
 # ---- Proper motion quiver plot ----
 C = np.hypot(pmra, pmdec)
 plt.title("Proper motions of SMC stars")
