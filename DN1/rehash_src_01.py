@@ -66,7 +66,7 @@ def startrack(alpha, delta, t_start, t_end, bins, SUT0, lamb, phi):
 
 def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
     """
-    Get Az, Alt of sun at certain time in the day for a whole year
+    Get Az, Alt of sun at certain time in the day for input whole year
 
     :param GMST: Array of SUT0 numbers for days in degrees
     :param TOD: Time of day in degrees
@@ -100,7 +100,7 @@ def sun_analemma(GMST, TOD, Obs_lambda, Obs_phi, index_delay=0):
 def sun_proper_analemma(GMST, TOD, Obs_lambda, Obs_phi, JD_start, index_delay=0):
     """
     Analemma but taking into account, that Earth's orbit is not circular but elliptical
-    Get Az, Alt of sun at certain time in the day for a whole year
+    Get Az, Alt of sun at certain time in the day for input whole year
 
     :param GMST: Array of SUT0 numbers for days in degrees
     :param TOD: Time of day in degrees
@@ -159,7 +159,7 @@ def planetary_analemma(GMST, TOD, year_length, Obs_lambda, Obs_phi, JD_start,
                        M_0, M_1, Pi, C, cont_cor1, cont_cor2, index_delay=0):
     """
         Calculates analemma for planet. Generalization of sun_proper_analemma().
-        Get Az, Alt of sun at certain time in the day for a whole year
+        Get Az, Alt of sun at certain time in the day for input whole year
 
         :param GMST: Array of SUT0 numbers for days in degrees. Must be size year_length + 1
         :param TOD: Time of day in degrees
