@@ -13,6 +13,16 @@ def order(input):
             raise ArithmeticError("Not ascending order..")
     return True
 
+def movement(coord, delta, intervals):
+    """
+    Calculates coord changes
+    :param coord: Input coord
+    :param delta: Delta in some time interval
+    :param intervals: Times of that interval
+    :return: Changed coord
+    """
+    return coord + intervals * (delta / 3600000)
+
 
 
 c1, c2, c3 = cmr.take_cmap_colors("cmr.gothic", 3, cmap_range=(0.2, 0.8), return_fmt="hex")
@@ -42,8 +52,13 @@ s_pmdec = data[1]
 
 w = 42352
 s_size = 1000
-sample_ra = s_pmra[:s_size]
-sample_dec = s_pmdec[:s_size]
-Y, X = np.mgrid[min(sample_ra):max(sample_ra):100j, min(sample_dec):max(sample_dec):100j]
+sample_ra = ra[:s_size]
+sample_dec = dec[:s_size]
+sample_pmra = pmra[:s_size]
+sample_pmdec = pmdec[:s_size]
+Y, X = np.mgrid[min(sample_pmra):max(sample_pmra):1000j, min(sample_pmdec):max(sample_pmdec):1000j]
+movement_ra = movement(sample_ra, sample_pmra, 10**6)
+movement_dec = movement(sample_dec, sample_pmdec, 10**6)
+
 plt.streamplot(X, Y, X, Y, cmap="cmr.bubblegum")
 plt.show()
