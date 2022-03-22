@@ -14,11 +14,16 @@ plt.ylabel(r"$\Delta\delta$ [mas/year]")
 plt.show()
 
 # ---- Proper motion quiver plot ----
-C = np.hypot(pmra, pmdec)
+pmra_median = np.median(pmra)
+pmdec_median = np.median(pmdec)
+pmra_sub = pmra - pmra_median
+pmdec_sub = pmdec - pmdec_median
+
+C = np.hypot(pmra_sub, pmdec_sub)
 plt.title("Proper motions of SMC stars")
 # plt.scatter(pmra, pmdec, s=0.25, c=c2)
 
-plt.quiver(ra, dec, pmra, pmdec, C, scale=50, cmap="cmr.bubblegum", alpha=0.4)
+plt.quiver(ra, dec, pmra_sub, pmdec_sub, C, scale=50, cmap="cmr.bubblegum", alpha=0.4)
 plt.xlabel(r"$\alpha$ [$\degree$]")
 plt.ylabel(r"$\delta$ [$\degree$]")
 plt.show()
