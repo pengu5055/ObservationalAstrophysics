@@ -57,36 +57,32 @@ ra_f = np.take(ra, filt)
 dec_f = np.take(dec, filt)
 pmra_f = np.take(pmra, filt)
 pmdec_f = np.take(pmdec, filt)
-
-
-# ---- Proper motion filter plot ----
-plt.scatter(pmra, pmdec, s=2, c=c1, label="Noise")
-plt.scatter(pmra_f, pmdec_f, s=1, c=c2, label="LMC stars")
-plt.xlim(-4, 7)
-plt.ylim(-7, 7)
-plt.title("Filtering by proper motion")
-plt.xlabel(r"$\Delta\alpha$ [mas/year]")
-plt.ylabel(r"$\Delta\delta$ [mas/year]")
-plt.legend()
-plt.show()
-
-# ---- Proper motion quiver plot ----
 pmra_n = pmra_f - np.median(pmra_f)
-pmdec_n = pmdec_f - np.median(pmdec_f)
-
+pmdec_n = pmdec_f - np.median(pmdec_f)  # Len is 41443
 C = np.hypot(pmra_n, pmdec_n)
 
-plt.quiver(ra_f, dec_f, pmra_n, pmdec_n, C, width=0.002, headwidth=3, headlength=5,
-           scale=10, cmap="cmr.bubblegum", alpha=0.4)
-plt.xlabel(r"$\alpha$ [$\degree$]")
-plt.ylabel(r"$\delta$ [$\degree$]")
-plt.title("Rotation of LMC")
-plt.colorbar(label=r"$\Delta$ [mas/year]")
-plt.show()
+# ---- Proper motion filter plot ----
+# plt.scatter(pmra, pmdec, s=2, c=c1, label="Noise")
+# plt.scatter(pmra_f, pmdec_f, s=1, c="#ADF1D2", label="LMC stars")
+# plt.xlim(-4, 7)
+# plt.ylim(-7, 7)
+# plt.title("Filtering by proper motion")
+# plt.xlabel(r"$\Delta\alpha$ [mas/year]")
+# plt.ylabel(r"$\Delta\delta$ [mas/year]")
+# plt.legend()
+# plt.show()
+
+# ---- Proper motion quiver plot ----
+# plt.quiver(ra_f, dec_f, pmra_n, pmdec_n, C, width=0.002, headwidth=3, headlength=5,
+#            scale=10, cmap="cmr.bubblegum", alpha=0.6)
+# plt.xlabel(r"$\alpha$ [$\degree$]")
+# plt.ylabel(r"$\delta$ [$\degree$]")
+# plt.title("Rotation of LMC")
+# plt.colorbar(label=r"$\Delta$ [mas/year]")
+# plt.show()
 
 
 # ---- Stream plot (failed) ----
-#
 # data = np.sort(np.array([pmra, pmdec]), axis=1)
 # s_pmra = data[0]
 # s_pmdec = data[1]
@@ -111,13 +107,13 @@ plt.show()
 
 # ---- Stream plot code snippet from Ema ----
 fig, ax = plt.subplots()
-x = np.array(ra)
-y = np.array(dec)
-u = pmra
-v = pmdec
+x = np.array(ra_f)
+y = np.array(dec_f)
+u = pmra_n
+v = pmdec_n
 
 # resample onto a 50x50 grid
-nx, ny = 2000, 2000
+nx, ny = 200, 200
 
 # (N, 2) arrays of input x,y coords and u,v values
 pts = np.vstack((x, y)).T
@@ -141,5 +137,5 @@ ui.shape = vi.shape = (ny, nx)
 # plot
 # fig, ax = plt.subplots(1, 1)
 # ax.hold(True)
-# plt.streamplot(xi, yi, ui, vi, cmap="cmr.bubblegum")
+plt.streamplot(xi, yi, ui, vi, color=C, cmap="cmr.bubblegum")
 plt.show()

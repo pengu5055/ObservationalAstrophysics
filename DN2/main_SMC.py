@@ -32,7 +32,7 @@ pmdec_f = np.take(pmdec, filt)
 
 # ---- Proper motion filter plot ----
 plt.scatter(pmra, pmdec, s=2, c=c1, label="Noise")
-plt.scatter(pmra_f, pmdec_f, s=1, c=c2, label="SMC stars")
+plt.scatter(pmra_f, pmdec_f, s=1, c="#ADF1D2", label="SMC stars")
 plt.xlim(-0.25, 1.75)
 plt.ylim(-2, -0.25)
 plt.title("Filtering by proper motion")
@@ -47,7 +47,7 @@ pmdec_n = pmdec_f - np.median(pmdec_f)
 
 C = np.hypot(pmra_n, pmdec_n)
 
-plt.quiver(ra_f, dec_f, pmra_n, pmdec_n, C, width=0.004, scale=5, cmap="cmr.bubblegum", alpha=0.4)
+plt.quiver(ra_f, dec_f, pmra_n, pmdec_n, C, width=0.004, scale=5, cmap="cmr.bubblegum", alpha=0.6)
 plt.xlabel(r"$\alpha$ [$\degree$]")
 plt.ylabel(r"$\delta$ [$\degree$]")
 plt.title("Rotation of SMC")
