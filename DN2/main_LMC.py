@@ -37,22 +37,6 @@ c1, c2, c3 = cmr.take_cmap_colors("cmr.gothic", 3, cmap_range=(0.2, 0.8), return
 source_id, ra, dec, parallax, pmra, pmdec, phot_g_mean_mag = \
     np.column_stack(np.genfromtxt("LMC_tc_rangemag5.csv", delimiter=",", skip_header=1))
 
-# ---- Proper motion quiver plot ----
-# pmra_median = np.median(pmra)
-# pmdec_median = np.median(pmdec)
-# pmra_sub = pmra - pmra_median
-# pmdec_sub = pmdec - pmdec_median
-#
-# C = np.hypot(pmra_sub, pmdec_sub)
-# # plt.scatter(pmra, pmdec, s=0.25, c=c2)
-#
-# plt.quiver(ra, dec, pmra_sub, pmdec_sub, C, scale=25, cmap="cmr.bubblegum", alpha=0.4)
-# plt.xlabel(r"$\alpha$ [$\degree$]")
-# plt.ylabel(r"$\delta$ [$\degree$]")
-# plt.title("Proper motions of LMC stars")
-# plt.show()
-
-
 # ---- Proper motion filtering ----
 def elipse(pmra, pmdec, x, y, a, b):
     output = []
@@ -79,6 +63,21 @@ plt.xlabel(r"$\Delta\alpha$ [mas/year]")
 plt.ylabel(r"$\Delta\delta$ [mas/year]")
 plt.legend()
 plt.show()
+
+# ---- Proper motion quiver plot ----
+# pmra_median = np.median(pmra)
+# pmdec_median = np.median(pmdec)
+# pmra_sub = pmra - pmra_median
+# pmdec_sub = pmdec - pmdec_median
+#
+# C = np.hypot(pmra_sub, pmdec_sub)
+# # plt.scatter(pmra, pmdec, s=0.25, c=c2)
+#
+# plt.quiver(ra, dec, pmra_sub, pmdec_sub, C, scale=25, cmap="cmr.bubblegum", alpha=0.4)
+# plt.xlabel(r"$\alpha$ [$\degree$]")
+# plt.ylabel(r"$\delta$ [$\degree$]")
+# plt.title("Proper motions of LMC stars")
+# plt.show()
 
 
 # ---- Stream plot (failed) ----
