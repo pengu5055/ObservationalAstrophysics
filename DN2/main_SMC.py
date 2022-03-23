@@ -57,8 +57,8 @@ plt.show()
 fig, ax = plt.subplots()
 x = ra_f
 y = dec_f
-v = pmra_n
-u = pmdec_n
+u = pmra_n
+v = pmdec_n
 
 # resample onto a 50x50 grid
 nx, ny = 220, 220
