@@ -113,7 +113,7 @@ u = pmra_n
 v = pmdec_n
 
 # resample onto a 50x50 grid
-nx, ny = 200, 200
+nx, ny = 50, 50
 
 # (N, 2) arrays of input x,y coords and u,v values
 pts = np.vstack((x, y)).T
@@ -128,14 +128,19 @@ yi = np.linspace(y.min(), y.max(), ny)
 ipts = np.vstack(a.ravel() for a in np.meshgrid(yi, xi)[::-1]).T
 
 # an (nx * ny, 2) array of interpolated u, v values
-ivals = griddata(pts, vals, ipts, method='cubic')
+ivals = griddata(pts, vals, ipts, method='nearest')
 
 # reshape interpolated u,v values into (ny, nx) arrays
 ui, vi = ivals.T
 ui.shape = vi.shape = (ny, nx)
+grid_C = np.hypot(ui, vi)
 
 # plot
 # fig, ax = plt.subplots(1, 1)
 # ax.hold(True)
-plt.streamplot(xi, yi, ui, vi, color=C, cmap="cmr.bubblegum")
+plt.streamplot(xi, yi, ui, vi, color=grid_C, cmap="cmr.bubblegum")
+plt.title("Prikaz rotacije z tokovnicami za LMC")
+plt.xlabel(r"$\alpha$ [$\degree$]")
+plt.ylabel(r"$\delta$ [$\degree$]")
+plt.colorbar(label=r"$\Delta$ [mas/year]")
 plt.show()
