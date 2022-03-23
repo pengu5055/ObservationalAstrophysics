@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cmasher as cmr
-
+from scipy.interpolate import griddata
 
 # Check ascending order
 def order(input):
@@ -38,22 +38,51 @@ source_id, ra, dec, parallax, pmra, pmdec, phot_g_mean_mag = \
     np.column_stack(np.genfromtxt("LMC_tc_rangemag5.csv", delimiter=",", skip_header=1))
 
 # ---- Proper motion quiver plot ----
-pmra_median = np.median(pmra)
-pmdec_median = np.median(pmdec)
-pmra_sub = pmra - pmra_median
-pmdec_sub = pmdec - pmdec_median
+# pmra_median = np.median(pmra)
+# pmdec_median = np.median(pmdec)
+# pmra_sub = pmra - pmra_median
+# pmdec_sub = pmdec - pmdec_median
+#
+# C = np.hypot(pmra_sub, pmdec_sub)
+# # plt.scatter(pmra, pmdec, s=0.25, c=c2)
+#
+# plt.quiver(ra, dec, pmra_sub, pmdec_sub, C, scale=25, cmap="cmr.bubblegum", alpha=0.4)
+# plt.xlabel(r"$\alpha$ [$\degree$]")
+# plt.ylabel(r"$\delta$ [$\degree$]")
+# plt.title("Proper motions of LMC stars")
+# plt.show()
 
-C = np.hypot(pmra_sub, pmdec_sub)
-# plt.scatter(pmra, pmdec, s=0.25, c=c2)
 
-plt.quiver(ra, dec, pmra_sub, pmdec_sub, C, scale=25, cmap="cmr.bubblegum", alpha=0.4)
-plt.xlabel(r"$\alpha$ [$\degree$]")
-plt.ylabel(r"$\delta$ [$\degree$]")
-plt.title("Proper motions of LMC stars")
+# ---- Proper motion filtering ----
+def elipse(pmra, pmdec, x, y, a, b):
+    output = []
+    n = len(pmra)
+    for i in range(n):
+        if ((pmra[i] - x)**2)/a**2 + ((pmdec[i] - y)**2)/b**2 <= 1:
+            output.append(i)
+
+    return np.array(output)
+
+
+x_coord = 1.86
+y_coord = 0.33
+filter = elipse(pmra, pmdec, x_coord, y_coord, 2.2, 1.7)
+pmra_f = np.take(pmra, filter)
+pmdec_f = np.take(pmdec, filter)
+
+plt.scatter(pmra, pmdec, s=2, c=c1, label="Noise")
+plt.scatter(pmra_f, pmdec_f, s=1, c=c2, label="LMC stars")
+plt.xlim(-4, 7)
+plt.ylim(-7, 7)
+plt.title("Filtering by proper motion")
+plt.xlabel(r"$\Delta\alpha$ [mas/year]")
+plt.ylabel(r"$\Delta\delta$ [mas/year]")
+plt.legend()
 plt.show()
 
-# ---- Stream plot ----
 
+# ---- Stream plot (failed) ----
+#
 # data = np.sort(np.array([pmra, pmdec]), axis=1)
 # s_pmra = data[0]
 # s_pmdec = data[1]
@@ -75,3 +104,38 @@ plt.show()
 #
 # plt.streamplot(X, Y, movement_ra, movement_dec, color=C, cmap="cmr.bubblegum")
 # plt.show()
+
+# ---- Stream plot code snippet from Ema ----
+fig, ax = plt.subplots()
+x = np.array(ra)
+y = np.array(dec)
+u = pmra
+v = pmdec
+
+# resample onto a 50x50 grid
+nx, ny = 2000, 2000
+
+# (N, 2) arrays of input x,y coords and u,v values
+pts = np.vstack((x, y)).T
+vals = np.vstack((u, v)).T
+
+# the new x and y coordinates for the grid, which will correspond to the
+# columns and rows of u and v respectively
+xi = np.linspace(x.min(), x.max(), nx)
+yi = np.linspace(y.min(), y.max(), ny)
+
+# an (nx * ny, 2) array of x,y coordinates to interpolate at
+ipts = np.vstack(a.ravel() for a in np.meshgrid(yi, xi)[::-1]).T
+
+# an (nx * ny, 2) array of interpolated u, v values
+ivals = griddata(pts, vals, ipts, method='cubic')
+
+# reshape interpolated u,v values into (ny, nx) arrays
+ui, vi = ivals.T
+ui.shape = vi.shape = (ny, nx)
+
+# plot
+# fig, ax = plt.subplots(1, 1)
+# ax.hold(True)
+plt.streamplot(xi, yi, ui, vi, cmap="cmr.bubblegum")
+plt.show()
