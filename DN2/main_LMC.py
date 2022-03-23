@@ -105,12 +105,12 @@ C = np.hypot(pmra_n, pmdec_n)
 # plt.streamplot(X, Y, movement_ra, movement_dec, color=C, cmap="cmr.bubblegum")
 # plt.show()
 
-# ---- Stream plot code snippet from Ema ----
+# ---- Stream plot code snippet from Ema with additions ----
 fig, ax = plt.subplots()
-x = np.array(ra_f)
-y = np.array(dec_f)
-u = pmra_n
-v = pmdec_n
+x = ra_f
+y = dec_f
+v = pmra_n
+u = pmdec_n
 
 # resample onto a 50x50 grid
 nx, ny = 50, 50
@@ -138,8 +138,8 @@ grid_C = np.hypot(ui, vi)
 # plot
 # fig, ax = plt.subplots(1, 1)
 # ax.hold(True)
-plt.streamplot(xi, yi, ui, vi, color=grid_C, cmap="cmr.bubblegum")
-plt.title("Prikaz rotacije z tokovnicami za LMC")
+plt.streamplot(xi, yi, -ui, -vi, color=grid_C, cmap="cmr.bubblegum")
+plt.title("Stream plot for LMC")
 plt.xlabel(r"$\alpha$ [$\degree$]")
 plt.ylabel(r"$\delta$ [$\degree$]")
 plt.colorbar(label=r"$\Delta$ [mas/year]")
