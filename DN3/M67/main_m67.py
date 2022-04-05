@@ -50,7 +50,7 @@ M67_dist = 850
 b_data = np.column_stack(np.genfromtxt("b.dat"))
 v_data = np.column_stack(np.genfromtxt("v.dat"))
 
-b_iso, v_iso = np.column_stack(np.genfromtxt("iso-1e10.txt", usecols=(29, 30)))
+b_iso, v_iso = np.column_stack(np.genfromtxt("iso-3-5e9.txt", usecols=(29, 30)))
 iso_b_app = apparent_mag(b_iso, M67_dist)
 iso_v_app = apparent_mag(v_iso, M67_dist)
 
@@ -91,12 +91,13 @@ y_filt = np.take(y, filt)
 
 fig, ax = plt.subplots()
 plt.scatter(x_filt, y_filt, s=5, c=c2)
-plt.plot(iso_b_app-iso_v_app + 0.7, v_iso + 2.3, c="#fa4172")  # 1e10
-plt.plot(iso_b_app1-iso_v_app1 + 0.84, v_iso1 + 3.1, c="#34d2e0")
+# plt.plot(iso_b_app-iso_v_app + 0.84, v_iso + 3.1, c="#34d2e0")
+plt.plot(iso_b_app1-iso_v_app1 + 0.84, v_iso1 + 3.1, c="#fa4172", label="4e9 years")
 
 plt.title("HR Diagram for M67")
 plt.xlabel(r"$B - V$")
 plt.ylabel(r"$M_V$")
+plt.legend()
 ax.invert_yaxis()
 plt.show()
 
