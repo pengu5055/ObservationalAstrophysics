@@ -18,7 +18,7 @@ def process_tables(t1, t2, dist):
     V_mag = []
     index = []
     c = 0
-    for i in range(np.shape(t1)[1] - 1):
+    for i in range(np.shape(t1)[1] - 2):
         if t1[0, i] == t2[0, i]:
             index.append(int(c))
             BV.append(t1[3, i] - t2[3, i])
@@ -43,8 +43,8 @@ c1, c2, c3 = cmr.take_cmap_colors("cmr.guppy", 3, cmap_range=(0.1, 0.9), return_
 
 # Data format: ID,XC,YC,MAG,MERR
 
-b_data = np.column_stack(np.genfromtxt("b.dat"))
-v_data = np.column_stack(np.genfromtxt("v.dat"))
+b_data = np.column_stack(np.genfromtxt("b2.dat"))
+v_data = np.column_stack(np.genfromtxt("v2.dat"))
 
 
 M48_dist = 770
@@ -72,7 +72,7 @@ y_filt = np.take(y, filt)
 # Image coordinates plot to do rough filtering
 plt.scatter(b_x1, b_y1, s=5, c=c1)
 plt.scatter(b_x, b_y, s=5, c=c2, label="Selected")
-plt.title("M67 star rough filtering")
+plt.title("M48 star rough filtering")
 plt.xlabel(".FITS X")
 plt.ylabel(".FITS Y")
 plt.legend()
