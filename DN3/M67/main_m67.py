@@ -40,7 +40,7 @@ def ellipse(u, v, x, y, a, b):
     return np.array(output)
 
 
-c1, c2, c3 = cmr.take_cmap_colors("cmr.torch", 3, cmap_range=(0.3, 0.7), return_fmt="hex")
+c1, c2, c3 = cmr.take_cmap_colors("cmr.guppy", 3, cmap_range=(0.1, 0.9), return_fmt="hex")
 
 # Data format: ID,XC,YC,MAG,MERR
 
@@ -60,23 +60,28 @@ v_y1 = np.take(v_data[2], ind)
 v_mag1 = np.take(v_data[3], ind)
 v_merr1 = np.take(v_data[4], ind)
 
-filt = ellipse(b_x1, b_y1, 1050, 1050, 100, 500)
+filt = ellipse(b_x1, b_y1, 1050, 1050, 1000, 600)
 b_x = np.take(b_x1, filt)
 b_y = np.take(b_y1, filt)
 b_mag = np.take(b_mag1, filt)
 b_merr = np.take(b_merr1, filt)
 v_mag = np.take(v_mag1, filt)
 v_merr = np.take(v_merr1, filt)
+x_filt = np.take(x, filt)
+y_filt = np.take(y, filt)
 
 # Image coordinates plot to do rough filtering
-plt.scatter(b_x1, b_y1, s=4, c="black")
-plt.scatter(b_x, b_y, s=4, c="red")
-
+plt.scatter(b_x1, b_y1, s=5, c=c1)
+plt.scatter(b_x, b_y, s=5, c=c2, label="Selected")
+plt.title("M67 star rough filtering")
+plt.xlabel(".FITS X")
+plt.ylabel(".FITS Y")
+plt.legend()
 plt.show()
 
 
 fig, ax = plt.subplots()
-plt.scatter(x, y, s=1, c=c2)
+plt.scatter(x_filt, y_filt, s=5, c=c2)
 
 plt.title("HR Diagram for M67")
 plt.xlabel(r"$B - V$")
