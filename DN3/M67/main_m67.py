@@ -1,4 +1,3 @@
-import numpy
 import numpy as np
 import matplotlib.pyplot as plt
 import cmasher as cmr
@@ -50,10 +49,14 @@ c1, c2, c3 = cmr.take_cmap_colors("cmr.guppy", 3, cmap_range=(0.1, 0.9), return_
 M67_dist = 850
 b_data = np.column_stack(np.genfromtxt("b.dat"))
 v_data = np.column_stack(np.genfromtxt("v.dat"))
-b_iso, v_iso = np.column_stack(np.genfromtxt("iso1.dat.txt", usecols=(29, 30), delimiter="\t"))
-print(b_iso, v_iso)
+
+b_iso, v_iso = np.column_stack(np.genfromtxt("iso-1e10.txt", usecols=(29, 30)))
 iso_b_app = apparent_mag(b_iso, M67_dist)
 iso_v_app = apparent_mag(v_iso, M67_dist)
+
+b_iso1, v_iso1 = np.column_stack(np.genfromtxt("iso-4e9.txt", usecols=(29, 30)))
+iso_b_app1 = apparent_mag(b_iso1, M67_dist)
+iso_v_app1 = apparent_mag(v_iso1, M67_dist)
 
 x, y, ind = process_tables(b_data, v_data, M67_dist)
 ind = ind - 1  # Ind starts at 1 not at 0
@@ -88,7 +91,8 @@ y_filt = np.take(y, filt)
 
 fig, ax = plt.subplots()
 plt.scatter(x_filt, y_filt, s=5, c=c2)
-plt.scatter(v_iso, iso_b_app-iso_v_app, s=5)
+plt.plot(iso_b_app-iso_v_app + 0.7, v_iso + 2.3, c="#fa4172")  # 1e10
+plt.plot(iso_b_app1-iso_v_app1 + 0.84, v_iso1 + 3.1, c="#34d2e0")
 
 plt.title("HR Diagram for M67")
 plt.xlabel(r"$B - V$")
