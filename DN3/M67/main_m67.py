@@ -55,8 +55,8 @@ iso_b_app = apparent_mag(b_iso, M67_dist)
 iso_v_app = apparent_mag(v_iso, M67_dist)
 
 b_iso1, v_iso1 = np.column_stack(np.genfromtxt("iso-4e9.txt", usecols=(29, 30)))
-iso_b_app1 = apparent_mag(b_iso1, M67_dist)
-iso_v_app1 = apparent_mag(v_iso1, M67_dist)
+iso_b_app1 = apparent_mag(b_iso1, M67_dist) + 0.8
+iso_v_app1 = apparent_mag(v_iso1, M67_dist) + 0.8
 
 x, y, ind = process_tables(b_data, v_data, M67_dist)
 ind = ind - 1  # Ind starts at 1 not at 0
@@ -92,8 +92,8 @@ y_filt = np.take(y, filt)
 fig, ax = plt.subplots()
 plt.scatter(x_filt, y_filt, s=5, c=c2)
 # plt.plot(iso_b_app-iso_v_app + 0.84, v_iso + 3.1, c="#34d2e0")
-plt.plot(iso_b_app1-iso_v_app1 + 0.84, v_iso1 + 3.1, c="#fa4172", label="4e9 years")
-
+# plt.plot(iso_b_app1-iso_v_app1 + 0.84, v_iso1 + 3.1, c="#fa4172", label="4e9 years")
+plt.plot(iso_b_app1-iso_v_app1, v_iso1 + 3.1, c="#fa4172", label="4e9 years")
 plt.title("HR Diagram for M67")
 plt.xlabel(r"$B - V$")
 plt.ylabel(r"$M_V$")

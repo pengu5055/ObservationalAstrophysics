@@ -13,6 +13,10 @@ def absolute_mag(mag, dist):
     return mag + 5 - 5*np.log10(dist)
 
 
+def apparent_mag(mag, dist):
+    return 5*np.log10(dist) + 5 + mag
+
+
 def process_tables(t1, t2, dist):
     BV = []
     V_mag = []
@@ -42,12 +46,14 @@ def ellipse(u, v, x, y, a, b):
 c1, c2, c3 = cmr.take_cmap_colors("cmr.guppy", 3, cmap_range=(0.1, 0.9), return_fmt="hex")
 
 # Data format: ID,XC,YC,MAG,MERR
-
+M48_dist = 770
 b_data = np.column_stack(np.genfromtxt("b2.dat"))
 v_data = np.column_stack(np.genfromtxt("v2.dat"))
 
+b_iso, v_iso = np.column_stack(np.genfromtxt("iso-5e8.txt", usecols=(29, 30)))
+iso_b_app = apparent_mag(b_iso, M48_dist)
+iso_v_app = apparent_mag(v_iso, M48_dist)
 
-M48_dist = 770
 x, y, ind = process_tables(b_data, v_data, M48_dist)
 ind = ind - 1  # Ind starts at 1 not at 0
 b_x1 = np.take(b_data[1], ind)
@@ -70,22 +76,24 @@ x_filt = np.take(x, filt)
 y_filt = np.take(y, filt)
 
 # Image coordinates plot to do rough filtering
-plt.scatter(b_x1, b_y1, s=5, c=c1)
-plt.scatter(b_x, b_y, s=5, c=c2, label="Selected")
-plt.title("M48 star rough filtering")
-plt.xlabel(".FITS X")
-plt.ylabel(".FITS Y")
-plt.legend()
-plt.show()
+# plt.scatter(b_x1, b_y1, s=5, c=c1)
+# plt.scatter(b_x, b_y, s=5, c=c2, label="Selected")
+# plt.title("M48 star rough filtering")
+# plt.xlabel(".FITS X")
+# plt.ylabel(".FITS Y")
+# plt.legend()
+# plt.show()
 
 
 fig, ax = plt.subplots()
 plt.scatter(x_filt, y_filt, s=5, c=c2)
+plt.plot(iso_b_app-iso_v_app, v_iso + 3.3, c="#fa4172", label="5e8 years")
 
 plt.title("HR Diagram for M48")
 plt.xlabel(r"$B - V$")
 plt.ylabel(r"$M_V$")
 ax.invert_yaxis()
+plt.legend()
 plt.show()
 
 
