@@ -92,7 +92,7 @@ plt.plot(iso_b_app-iso_v_app + 1.075, v_iso + 4.1, c="#fa4172", label="4e8 years
 plt.title("HR Diagram for M48")
 plt.xlabel(r"$B - V$")
 plt.ylabel(r"$M_V$")
-plt.xlim(0.75, 2.5)
+plt.xlim(0.75, 2.25)
 plt.ylim(2, 10)
 ax.invert_yaxis()
 plt.legend()
