@@ -50,7 +50,7 @@ M48_dist = 770
 b_data = np.column_stack(np.genfromtxt("b2.dat"))
 v_data = np.column_stack(np.genfromtxt("v2.dat"))
 
-b_iso, v_iso = np.column_stack(np.genfromtxt("iso-5e8.txt", usecols=(29, 30)))
+b_iso, v_iso = np.column_stack(np.genfromtxt("iso-4e8.txt", usecols=(29, 30)))
 iso_b_app = apparent_mag(b_iso, M48_dist)
 iso_v_app = apparent_mag(v_iso, M48_dist)
 
@@ -87,11 +87,13 @@ y_filt = np.take(y, filt)
 
 fig, ax = plt.subplots()
 plt.scatter(x_filt, y_filt, s=5, c=c2)
-plt.plot(iso_b_app-iso_v_app, v_iso + 3.3, c="#fa4172", label="5e8 years")
+plt.plot(iso_b_app-iso_v_app + 1.075, v_iso + 4.1, c="#fa4172", label="4e8 years")
 
 plt.title("HR Diagram for M48")
 plt.xlabel(r"$B - V$")
 plt.ylabel(r"$M_V$")
+plt.xlim(0.75, 2.5)
+plt.ylim(2, 10)
 ax.invert_yaxis()
 plt.legend()
 plt.show()
