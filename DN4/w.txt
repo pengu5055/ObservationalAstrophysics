@@ -1,0 +1,9 @@
+HD104731-w.fits
+HD110379-w.fits
+HD1103791-w.fits
+HD159876-w.fits
+HD63700-w.fits
+HD82734-w.fits
+HD90853-w.fits
+HD92305-w.fits
+LTT6248-w.fits

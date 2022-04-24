@@ -1,0 +1,8 @@
+HD104731-c.fits
+HD110379-c.fits
+HD1103791-c.fits
+HD159876-c.fits
+HD63700-c.fits
+HD82734-c.fits
+HD90853-c.fits
+HD92305-c.fits
