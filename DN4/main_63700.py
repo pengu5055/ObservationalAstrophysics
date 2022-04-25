@@ -20,7 +20,7 @@ def blackbody_lam(lam, T):
 
 
 def planck(wav, T):
-    wav = wav * 10e-10
+    # wav = wav * 10e-10
     a = 2.0*h*c**2
     b = h*c/(wav*k*T)
     intensity = a/ ( (wav**5) * (np.exp(b) - 1.0) )
@@ -39,13 +39,13 @@ plt.figure(figsize=(12, 3))
 x, y = np.column_stack(np.genfromtxt("HD63700.txt"))
 lines = ["5266.2", "5892", "6139", "6497.4", "6563.4", "6871.6", "7605.5", "7630.9", "8500.1", "8544", "8665.2"]
 label = ["Fe I", "Na I", "Cs III", "Fe I", "H I", "V I", "V I", "V I", "V I", "V I", "Fe I"]
-wavelengths = np.arange(10, 11000, 5)
+wavelengths = np.arange(1000e-10, 15000e-10, 1e-10)
 plt.plot(x, y/np.max(y), c=c1)
 # spec_line(lines, label)
 # plt.axvline(6871.6, ls="--", c=c2)
-temp = 3000
+temp = 4000
 line2 = planck(wavelengths, temp)
-plt.plot(wavelengths, line2/np.max(line2), c=c3, label=temp)
+plt.plot(wavelengths * 10e9, line2/np.max(line2), c=c3, label=temp)
 
 plt.title("Planck fitted to HD63700")
 plt.xlabel(r"$\lambda$ [$\AA$]")
