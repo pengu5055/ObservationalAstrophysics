@@ -16,15 +16,15 @@ def planck(lamb, T):
 
 plt.figure(figsize=(12, 3))
 
-x, y = np.column_stack(np.genfromtxt("HD90852.txt"))
+x, y = np.column_stack(np.genfromtxt("HD92305.txt"))
 x = x * 1e-10
 wavelengths = np.arange(1e-7, 1e-6, 1e-8)
 plt.plot(x, y/np.max(y), c=c1)
-temp = 4500
+temp = 3700
 line2 = planck(wavelengths, temp)
 plt.plot(wavelengths, line2/np.max(line2), c=c3, label="Planck for {} K".format(temp))
 
-plt.title("Planck fitted to HD90852")
+plt.title("Planck fitted to HD92305")
 plt.xlabel(r"$\lambda$ [m]")
 plt.ylabel("Normalized Intensity")
 plt.legend()
