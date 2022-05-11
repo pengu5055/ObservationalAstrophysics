@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cmasher as cmr
 from scipy.stats import cauchy
+from scipy.special import voigt_profile
 
 # colors = cmr.take_cmap_colors("cmr.torch", 20, cmap_range=(0.1, 0.9), return_fmt="hex")
 colors = cmr.take_cmap_colors("cmr.torch", 100, cmap_range=(0.1, 0.9), return_fmt="hex")
@@ -30,29 +31,30 @@ def voigt(x, xc, A, wG, wL):
     Source: https://www.originlab.com/doc/Origin-Help/Voigt-FitFunc
     """
     dist = np.convolve(lorentz_voigt(x, A, xc, wL), gauss_voigt(x, wG), 'full')
-    return dist/np.max(dist)
+    return dist
 
 
 x_space = np.linspace(-3, 3, 1000)
 x_space2 = np.linspace(-3, 3, 1999)
-# dist1 = gauss_pdf(x_space, 0, 1)
-# dist2 = lorentz_pdf(x_space, 0, 1)
-# dist3 = voigt(x_space, 0, 1, 1, 1)
+dist1 = gauss_pdf(x_space, 0, 1)
+dist2 = lorentz_pdf(x_space, 0, 1)
+dist3 = voigt(x_space, 0, 1, 1, 1)
+dist4 = voigt_profile(x_space, 1, 1)
 
 # plt.plot(x_space, dist1, c=colors[4], label="Gauss")
 # plt.plot(x_space, dist2, c=colors[7], label="Lorentz")
-# plt.plot(x_space2, dist3, c=colors[14], label="Voigt")
-# plt.title("Distributions")
-# plt.xlabel("x")
-# plt.ylabel("f(x)")
-# plt.legend()
-# plt.show()
+plt.plot(x_space2, dist3, c=colors[10], label="Voigt")
+plt.plot(x_space, dist4, c=colors[15], label="Voigt 2")
+plt.title("Distributions")
+plt.xlabel("x")
+plt.ylabel("f(x)")
+plt.legend()
+plt.show()
 
-satur = np.arange(1, 100)
-for i in range(len(satur)):
-    line = - voigt(x_space, 0, 1, satur[i], satur[i])
-    plt.plot(x_space2, line, color=colors[i], label=satur[i])
 
-plt.axhline(y=0, color="gray", linestyle='--')
-
+C = 100  # Constant factor
+line = voigt(x_space, 0, 1, 0.001, 0.001)
+satur_line = np.exp(-C * line)
+plt.plot(x_space2, satur_line, c=colors[4])
+plt.plot(x_space2, -line, c=colors[14])
 plt.show()
