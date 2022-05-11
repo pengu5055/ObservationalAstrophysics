@@ -62,8 +62,10 @@ for k in konst:
     plt.plot(x_s, saturated_line(x_s, sigma, gamma, k), c=colors[c], label="k:{}".format(k))
     c += 1
 
-
+plt.title("Spectral line saturation")
 plt.axhline(1, ls="--", color="gray")
+plt.xlabel("Center of line offset")
+plt.ylabel("Normalized flux")
 plt.legend()
 plt.show()
 
