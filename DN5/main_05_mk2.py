@@ -8,7 +8,7 @@ from sklearn.metrics import auc
 colors = cmr.take_cmap_colors("cmr.torch", 10, cmap_range=(0.1, 0.9), return_fmt="hex")
 
 
-def V(x, alpha, gamma):
+def V(x, alpha, gamma, center=0.0):
     """
     Return the Voigt line shape at x with Lorentzian component HWHM gamma
     and Gaussian component HWHM alpha.
@@ -16,7 +16,7 @@ def V(x, alpha, gamma):
     """
     sigma = alpha / np.sqrt(2 * np.log(2))
 
-    return np.real(wofz((x + 1j*gamma)/sigma/np.sqrt(2))) / sigma/np.sqrt(2*np.pi)
+    return np.real(wofz((x - center + 1j*gamma)/sigma/np.sqrt(2))) / sigma/np.sqrt(2*np.pi)
 
 
 def gauss(x, sigma):
@@ -90,23 +90,47 @@ x_s = np.linspace(-1000, 1000, 100000)
 # plt.show()
 
 # ---- 3. task ----
+# N_space = np.logspace(6, 12, 1000)
+# phi = V(x_s, 10, 1)
+# # phi = gauss(x_s, 10)
+# f = 1
+# widths = []
+# for N in N_space:
+#     l = line(f, N, phi)
+#     widths.append(e_w(x_s, l))
+# widths = np.array(widths)
+#
+# plt.plot(N_space, widths, c=colors[7])
+#
+# plt.title("Curve Of Growth")
+# plt.xscale("log")
+# plt.yscale("log")
+# plt.xlabel(r"$\log{Nf_{lu}}$")
+# plt.ylabel(r"$\log{EW}$")
+# plt.show()
 
+# ---- 4. task ----
+CALIBRATION_CORR = 2.35  # Angstrom
+center_no1 = 5891.5  # angstrom
+f_no1 = 0.641
+center_no2 = 5897.5  # angstrom
+f_no2 = 0.320
+x, y = np.column_stack(np.genfromtxt("HD161056.dat"))
 
-N_space = np.logspace(6, 12, 1000)
-phi = V(x_s, 10, 1)
-# phi = gauss(x_s, 10)
-f = 1
-widths = []
-for N in N_space:
-    l = line(f, N, phi)
-    widths.append(e_w(x_s, l))
-widths = np.array(widths)
+# Rough filtering of shit spike
+x = x[300:len(x)-700]
+y = y[300:len(y)-700]
 
-plt.plot(N_space, widths, c=colors[7])
+x_no1 = np.linspace(5890, 5894, 1000)
+fit1 = line(f_no1, 10e6, V(x_no1, 0.1, 0.1, center=center_no1))
 
-plt.title("Curve Of Growth")
-plt.xscale("log")
-plt.yscale("log")
-plt.xlabel(r"$\log{Nf_{lu}}$")
-plt.ylabel(r"$\log{EW}$")
+fig, ax = plt.subplots()
+plt.plot(x + CALIBRATION_CORR, y, c=colors[7])
+plt.plot(x_no1, fit1, c=colors[2])
+
+plt.title(r"Sodium 5891.5 $\AA$ line in HD161056")
+plt.xlabel(r"$\lambda$ [$\AA$]")
+plt.ylabel("Relative intensity")
+plt.xlim(5890, 5894)
+ax.grid(True)
 plt.show()
