@@ -117,20 +117,23 @@ center_no2 = 5897.5  # angstrom
 f_no2 = 0.320
 x, y = np.column_stack(np.genfromtxt("HD161056.dat"))
 
+x_int1 = x[21731:21761]
+y_int1 = y[21731:21761]
+x_int2 = x[21796:21815]
+y_int2 = y[21796:21815]
 # Rough filtering of shit spike
 x = x[300:len(x)-700]
 y = y[300:len(y)-700]
 
-x_no1 = np.linspace(5890, 5894, 1000)
-fit1 = line(f_no1, 10e6, V(x_no1, 0.1, 0.1, center=center_no1))
+print("EW NO1: {}".format(e_w(x_int1, y_int1)))
+print("EW NO2: {}".format(e_w(x_int2, y_int2)))
 
 fig, ax = plt.subplots()
 plt.plot(x + CALIBRATION_CORR, y, c=colors[7])
-plt.plot(x_no1, fit1, c=colors[2])
 
 plt.title(r"Sodium 5891.5 $\AA$ line in HD161056")
 plt.xlabel(r"$\lambda$ [$\AA$]")
-plt.ylabel("Relative intensity")
+plt.ylabel("Normalized intensity")
 plt.xlim(5890, 5894)
 ax.grid(True)
 plt.show()
