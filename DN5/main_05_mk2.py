@@ -58,7 +58,7 @@ constant = 8.431 * 10**-7
 # constant = 10**-10
 
 # x_s = np.linspace(-10e7, 10e7, 100000)
-x_s = np.linspace(-100, 100, 100000)
+x_s = np.linspace(-1000, 1000, 100000)
 # ---- 1. task ----
 # sigma = 1
 # gamma = 1
@@ -92,7 +92,7 @@ x_s = np.linspace(-100, 100, 100000)
 # ---- 3. task ----
 
 
-N_space = np.logspace(3, 29, 1000)
+N_space = np.logspace(6, 12, 1000)
 phi = V(x_s, 10, 1)
 # phi = gauss(x_s, 10)
 f = 1
@@ -104,7 +104,7 @@ widths = np.array(widths)
 
 plt.plot(N_space, widths, c=colors[7])
 
-plt.title("Curve of growth")
+plt.title("Curve Of Growth")
 plt.xscale("log")
 plt.yscale("log")
 plt.xlabel(r"$\log{Nf_{mu}}$")
