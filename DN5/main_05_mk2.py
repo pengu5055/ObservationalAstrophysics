@@ -45,7 +45,8 @@ def saturated_line(x, sigma, gamma, C):
 
 def e_w(x, I):
     # return integrate.simpson(1-I, x)
-    return auc(x, 1-I)
+    # return auc(x, 1-I)
+    return np.trapz(1-I, x)
 
 
 def line(f, N, phi):
@@ -54,8 +55,10 @@ def line(f, N, phi):
 
 
 constant = 8.431 * 10**-7
+# constant = 10**-10
 
-x_s = np.linspace(-50, 50, 1000)
+# x_s = np.linspace(-10e7, 10e7, 100000)
+x_s = np.linspace(-100, 100, 100000)
 # ---- 1. task ----
 # sigma = 1
 # gamma = 1
@@ -89,8 +92,9 @@ x_s = np.linspace(-50, 50, 1000)
 # ---- 3. task ----
 
 
-N_space = np.logspace(6, 15, 1000)
-phi = V(x_s, 1, 1)
+N_space = np.logspace(3, 29, 1000)
+phi = V(x_s, 10, 1)
+# phi = gauss(x_s, 10)
 f = 1
 widths = []
 for N in N_space:
