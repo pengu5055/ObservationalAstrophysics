@@ -59,6 +59,7 @@ constant = 8.431 * 10**-7
 
 # x_s = np.linspace(-10e7, 10e7, 100000)
 x_s = np.linspace(-1000, 1000, 100000)
+fig, ax = plt.subplots()
 # ---- 1. task ----
 # sigma = 1
 # gamma = 1
@@ -66,11 +67,13 @@ x_s = np.linspace(-1000, 1000, 100000)
 # dist2 = lorentz(x_s, gamma)
 # dist4 = voigt(x_s, sigma, gamma)
 #
-# plt.plot(x_s, dist1, label="Gauss")
-# plt.plot(x_s, dist2, label="Lorentz")
-# plt.plot(x_s, dist4, label="Voigt")
+# plt.plot(x_s, dist1, label="Gauss", c=colors[2])
+# plt.plot(x_s, dist2, label="Lorentz", c=colors[4])
+# plt.plot(x_s, dist4, label="Voigt", c=colors[7])
 #
 # plt.legend()
+# ax.grid(True)
+# plt.xlim(-10, 10)
 # plt.show()
 
 # ---- 2. task ----
@@ -87,6 +90,8 @@ x_s = np.linspace(-1000, 1000, 100000)
 # plt.xlabel("Center of line offset")
 # plt.ylabel("Normalized flux")
 # plt.legend()
+# ax.grid(True)
+# plt.xlim(-60, 60)
 # plt.show()
 
 # ---- 3. task ----
@@ -107,6 +112,7 @@ x_s = np.linspace(-1000, 1000, 100000)
 # plt.yscale("log")
 # plt.xlabel(r"$\log{Nf_{lu}}$")
 # plt.ylabel(r"$\log{EW}$")
+# ax.grid(True)
 # plt.show()
 
 # ---- 4. task ----
@@ -124,16 +130,20 @@ y_int2 = y[21796:21815]
 # Rough filtering of shit spike
 x = x[300:len(x)-700]
 y = y[300:len(y)-700]
+sigma = 0.15
+gamma = 0.2
+N = 1.4e6
 
 print("EW NO1: {}".format(e_w(x_int1, y_int1)))
 print("EW NO2: {}".format(e_w(x_int2, y_int2)))
+fit1 = line(f_no1, 1.4e6, V(x, 0.15, 0.2, center=center_no1))
 
-fig, ax = plt.subplots()
 plt.plot(x + CALIBRATION_CORR, y, c=colors[7])
-
+plt.plot(x, fit1, c=colors[3], label="Voigt profile fit\nsigma = {}\ngamma = {}\nN = {}".format(sigma, gamma, N))
 plt.title(r"Sodium 5891.5 $\AA$ line in HD161056")
 plt.xlabel(r"$\lambda$ [$\AA$]")
 plt.ylabel("Normalized intensity")
 plt.xlim(5890, 5894)
 ax.grid(True)
+plt.legend()
 plt.show()
