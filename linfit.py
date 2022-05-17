@@ -39,4 +39,29 @@ plt.errorbar(x, y, yerr=yerr, markersize=2, color="#5d89f0",
 plt.title("Naive fit")
 plt.xlabel("x")
 plt.ylabel("y")
-plt.show()
+# plt.show()
+
+import emcee
+
+
+def lnlike(theta, x, y, yerr):
+    a, b = theta
+    model = a * x + b
+    return -0.5 * np.sum(np.array([np.log(2*np.pi*s**2) + ((p - m)/s)**2 for m, p, s in zip(model, y, yerr)]))
+
+
+def lnprior(theta):
+    a, b = theta
+    if -10 < a < 10 and -10 < b < 10:
+        return 0.0
+    else:
+        return -np.inf
+
+
+def lnprob(theta, x, y, yerr):
+    return lnprior(theta) + lnlike(theta, x, y, yerr)
+
+
+theta = np.array([1, 4])
+print(lnlike(theta, x, y, yerr))
+
