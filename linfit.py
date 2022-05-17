@@ -5,6 +5,8 @@ from scipy.optimize import curve_fit
 
 c1, c2, c3 = cmr.take_cmap_colors("cmr.bubblegum", 3, cmap_range=(0.3, 1), return_fmt="hex")
 d1, d2, d3 = cmr.take_cmap_colors("cmr.toxic", 3, cmap_range=(0.6, 0.9), return_fmt="hex")
+color = cmr.take_cmap_colors("cmr.bubblegum", 8, cmap_range=(0.3, 1), return_fmt="hex")
+
 
 def linear(x, k, n):
     return k*x + n
@@ -39,20 +41,22 @@ plt.errorbar(x, y, yerr=yerr, markersize=2, color="#5d89f0",
 plt.title("Naive fit")
 plt.xlabel("x")
 plt.ylabel("y")
-# plt.show()
+plt.show()
 
 import emcee
+import corner
 
 
 def lnlike(theta, x, y, yerr):
-    a, b = theta
+    a, b, f = theta
     model = a * x + b
-    return -0.5 * np.sum(np.array([np.log(2*np.pi*s**2) + ((p - m)/s)**2 for m, p, s in zip(model, y, yerr)]))
+    moderror = yerr + f * yerr
+    return -0.5 * np.sum(np.array([np.log(2*np.pi*s**2) + ((p - m)/s)**2 for m, p, s in zip(model, y, moderror)]))
 
 
 def lnprior(theta):
-    a, b = theta
-    if -10 < a < 10 and -10 < b < 10:
+    a, b, f = theta
+    if -10 < a < 10 and -10 < b < 10 and 0 < f < 10:
         return 0.0
     else:
         return -np.inf
@@ -62,6 +66,30 @@ def lnprob(theta, x, y, yerr):
     return lnprior(theta) + lnlike(theta, x, y, yerr)
 
 
+def initcond(num_walkers, a_min, a_max, b_min, b_max):
+    return np.array([[np.random.uniform(a_min, a_max), np.random.uniform(b_max, b_min), np.random.uniform(0, 10)] for i in range(num_walkers)])
+
+
 theta = np.array([1, 4])
-print(lnlike(theta, x, y, yerr))
+walkers = 8
+init = initcond(8, -10, 10, -10, 10)
+
+sampler = emcee.EnsembleSampler(walkers, 3, lnprob, args=(x, y, yerr))
+sampler.run_mcmc(init, 5000)
+samples = sampler.get_chain()
+
+
+fig, (ax1, ax2) = plt.subplots(2, 1)
+for i in range(walkers):
+    ax1.plot(samples[:, i, 0], c=color[i])
+    ax2.plot(samples[:, i, 1], c=color[i])
+plt.show()
+
+flat_samples = sampler.get_chain(discard=100, flat=True)
+fig, ax = plt.subplots()
+plt.scatter(flat_samples[:, 0], flat_samples[:, 1], cmap="cmr.bubblegum", s=2)
+plt.show()
+fig2 = corner.corner(flat_samples, labels=["a", "b", "f"], quantiles=[0.16, 0.5, 0.84], show_titles=True)
+plt.show()
+
 
