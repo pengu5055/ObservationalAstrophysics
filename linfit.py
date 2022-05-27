@@ -56,8 +56,9 @@ def lnlike(theta, x, y, yerr):
 
 def lnprior(theta):
     a, b, f = theta
-    if -10 < a < 10 and -10 < b < 10 and 0 < f < 10:
-        return 0.0
+    if -10 < a < 10 and -10 < b < 10 and 0 < f < 10 and b > -(a/(a+0.64)) + 7 or a > -0.64:
+        # return np.log(0.5 + np.math.tanh(1*(a + 1)))
+        return np.log(1/(1+np.exp(-2*(a + 1)/10)))
     else:
         return -np.inf
 
@@ -67,7 +68,16 @@ def lnprob(theta, x, y, yerr):
 
 
 def initcond(num_walkers, a_min, a_max, b_min, b_max):
-    return np.array([[np.random.uniform(a_min, a_max), np.random.uniform(b_max, b_min), np.random.uniform(0, 10)] for i in range(num_walkers)])
+    temp_out = []
+    for i in range(num_walkers):
+        b_init = 1000
+        a_init = 0
+        while b_init > -(a_init/(a_init + 0.64)) + 7 or a_init < -0.64:
+            a_init = np.random.uniform(a_min, a_max)
+            b_init = np.random.uniform(b_min, b_max)
+        temp_out.append((a_init, b_init))
+
+    return np.array([[temp_out[i][0], temp_out[i][1], np.random.uniform(0, 10)] for i in range(num_walkers)])
 
 
 theta = np.array([1, 4])
